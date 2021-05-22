@@ -32,5 +32,5 @@ foreach my $count (1 .. $gb->num_verts) {
   isa_ok($vert, 'Geo::H3::FFI::GeoCoord');
   can_ok($vert, 'lat');
   can_ok($vert, 'lon');
-  diag(sprintf("Count: %s, Lat: %s, Lon: %s", $count, $vert->lat, $vert->lon));
+#  diag(sprintf("Count: %s, Lat: %s, Lon: %s", $count, $vert->lat, $vert->lon));
 }

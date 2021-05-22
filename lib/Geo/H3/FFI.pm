@@ -63,7 +63,7 @@ Finds the centroid of the index.
 =cut
 
 #void h3ToGeo(H3Index h3, GeoCoord *g);
-$ffi->attach(h3ToGeo => ['h3_index_t', 'geo_coord_t'] => 'void');
+$ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void');
 
 =head2 h3ToGeoBoundary
 
@@ -109,7 +109,7 @@ Returns 0 on error.
 =cut
 
 #H3Index stringToH3(const char *str);
-$ffi->attach(stringToH3 => ['char *', 'size_t'] => 'h3_index_t');
+$ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64_t');
 
 =head2 h3ToString
 
@@ -118,7 +118,7 @@ Converts the H3Index representation of the index to the string representation. s
 =cut
 
 #void h3ToString(H3Index h, char *str, size_t sz);
-$ffi->attach(h3ToString => ['h3_index_t', 'char *', 'size_t'] => 'void');
+$ffi->attach(h3ToString => ['uint64_t', 'string', 'size_t'] => 'void');
 
 =head2 h3IsValid
 

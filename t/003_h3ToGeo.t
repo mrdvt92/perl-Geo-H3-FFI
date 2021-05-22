@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 7;
+use Test::Number::Delta;
 BEGIN { use_ok('Geo::H3::FFI') };
 
 #$ h3ToGeo -i 8a2a1072b59ffff
@@ -21,7 +22,7 @@ is($h3->index, $index);
 my $geo       = Geo::H3::FFI::GeoCoord->new({});        #empty structure
 isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
 
-my $void2     = Geo::H3::FFI::h3ToGeo($h3, $geo); #assigns into structure
+my $void2     = Geo::H3::FFI::h3ToGeo($h3->index, $geo); #assigns into structure
 isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
-is($geo->lat, $lat_rad, '$geo->lat');
-is($geo->lon, $lon_rad, '$geo->lon');
+delta_ok($geo->lat, $lat_rad, '$geo->lat');
+delta_ok($geo->lon, $lon_rad, '$geo->lon');
