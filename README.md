@@ -10,8 +10,6 @@ Geo::H3::FFI - Perl FFI binding to H3 library functions
 
 Perl FFI binding to H3 library functions
 
-# HELPERS
-
 # Indexing Functions
 
 These function are used for finding the H3 index containing coordinates, and for finding the center and boundary of H3 indexes.
