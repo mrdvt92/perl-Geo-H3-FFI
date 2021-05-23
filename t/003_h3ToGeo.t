@@ -1,8 +1,9 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
-BEGIN { use_ok('Geo::H3::FFI') };
+use Test::Number::Delta;
+use Test::More tests => 5;
+require_ok 'Geo::H3::FFI';
 
 #$ h3ToGeo -i 8a2a1072b59ffff
 #40.6894218437 -74.0444313999
@@ -15,13 +16,10 @@ my $lon       = -74.0444313999;
 my $lat_rad   = Geo::H3::FFI::degsToRads($lat);
 my $lon_rad   = Geo::H3::FFI::degsToRads($lon);
 
-my $h3        = Geo::H3::FFI::H3Index->new({index=>$index});
-isa_ok($h3, 'Geo::H3::FFI::H3Index');
-is($h3->index, $index);
 my $geo       = Geo::H3::FFI::GeoCoord->new({});        #empty structure
 isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
 
-my $void2     = Geo::H3::FFI::h3ToGeo($h3, $geo); #assigns into structure
+my $void2     = Geo::H3::FFI::h3ToGeo($index, $geo); #assigns into structure
 isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
-is($geo->lat, $lat_rad, '$geo->lat');
-is($geo->lon, $lon_rad, '$geo->lon');
+delta_within($geo->lat, $lat_rad, 1e-11, '$geo->lat');
+delta_within($geo->lon, $lon_rad, 1e-11, '$geo->lon');
