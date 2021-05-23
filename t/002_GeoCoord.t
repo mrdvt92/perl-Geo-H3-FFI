@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Data::Dumper qw{Dumper};
 
 use Test::More tests => 10;
 BEGIN { use_ok('Geo::H3::FFI') };
@@ -24,6 +25,5 @@ my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);
 
 #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
 #8a2a1072b59ffff
-my $h3String   = '8a2a1072b59ffff';
-is($index, '622236750694711295', 'geoToH3');
-is(sprintf("%x", $index), $h3String);
+is($index, '622236750694711295', 'h3->index');
+is(sprintf("%x", $index), '8a2a1072b59ffff', 'sprintf');

@@ -14,7 +14,7 @@ FFI::C->ffi($ffi); #Beware: Class setting
 
 #$ffi->type('char *' => 'char_p');
 #$ffi->load_custom_type('::StringPointer' => 'string_p');
-package Geo::H3::FFI::H3Index       {FFI::C->struct(h3_index_t        => [index       => 'uint64'                              ])};
+package Geo::H3::FFI::H3Index       {FFI::C->struct(h3_index_t        => [index       => 'uint64_t'                            ])};
 package Geo::H3::FFI::ArrayH3Index  {FFI::C->array (array_h3_index_t  => [h3_index_t  => 255                                   ])};
 package Geo::H3::FFI::GeoCoord      {FFI::C->struct(geo_coord_t       => [lat         => 'double', lon   => 'double'           ])};
 package Geo::H3::FFI::ArrayGeoCoord {FFI::C->array (array_geo_coord_t => [geo_coord_t => 10                                    ])};
@@ -49,7 +49,7 @@ Returns 0 on error.
 =cut
 
 #H3Index geoToH3(const GeoCoord *g, int res);
-$ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64');
+$ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t');
 
 =head2 h3ToGeo
 
@@ -62,7 +62,7 @@ Finds the centroid of the index.
 =cut
 
 #void h3ToGeo(H3Index h3, GeoCoord *g);
-$ffi->attach(h3ToGeo => ['uint64', 'geo_coord_t'] => 'void');
+$ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void');
 
 =head2 h3ToGeoBoundary
 
@@ -75,7 +75,7 @@ Finds the boundary of the index.
 =cut
 
 #void h3ToGeoBoundary(H3Index h3, GeoBoundary *gp);
-$ffi->attach(h3ToGeoBoundary => ['uint64', 'geo_boundary_t'] => 'void');
+$ffi->attach(h3ToGeoBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
 
 =head1 Index Inspection Functions
 
@@ -88,7 +88,7 @@ Returns the resolution of the index.
 =cut
 
 #int h3GetResolution(H3Index h);
-$ffi->attach(h3GetResolution => ['uint64'] => 'int');
+$ffi->attach(h3GetResolution => ['uint64_t'] => 'int');
 
 =head2 h3GetBaseCell
 
@@ -97,7 +97,7 @@ Returns the base cell number of the index.
 =cut
 
 #int h3GetBaseCell(H3Index h);
-$ffi->attach(h3GetBaseCell => ['uint64'] => 'int');
+$ffi->attach(h3GetBaseCell => ['uint64_t'] => 'int');
 
 =head2 stringToH3
 
@@ -108,7 +108,7 @@ Returns 0 on error.
 =cut
 
 #H3Index stringToH3(const char *str);
-$ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64');
+$ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64_t');
 
 =head2 h3ToString
 
@@ -117,7 +117,7 @@ Converts the H3Index representation of the index to the string representation. s
 =cut
 
 #void h3ToString(H3Index h, char *str, size_t sz);
-$ffi->attach(h3ToString => ['uint64', 'string', 'size_t'] => 'void');
+$ffi->attach(h3ToString => ['uint64_t', 'string', 'size_t'] => 'void');
 
 =head2 h3ToString_wrapper
 
@@ -141,7 +141,7 @@ Returns non-zero if this is a valid H3 index.
 =cut
 
 #int h3IsValid(H3Index h);
-$ffi->attach(h3IsValid => ['uint64'] => 'int');
+$ffi->attach(h3IsValid => ['uint64_t'] => 'int');
 
 =head2 h3IsResClassIII
 
@@ -150,7 +150,7 @@ Returns non-zero if this index has a resolution with Class III orientation.
 =cut
 
 #int h3IsResClassIII(H3Index h);
-$ffi->attach(h3IsResClassIII => ['uint64'] => 'int');
+$ffi->attach(h3IsResClassIII => ['uint64_t'] => 'int');
 
 =head2 h3IsPentagon
 
@@ -159,7 +159,7 @@ Returns non-zero if this index represents a pentagonal cell.
 =cut
 
 #int h3IsPentagon(H3Index h);
-$ffi->attach(h3IsPentagon => ['uint64'] => 'int');
+$ffi->attach(h3IsPentagon => ['uint64_t'] => 'int');
 
 =head2 h3GetFaces
 
@@ -170,7 +170,7 @@ Faces are represented as integers from 0-19, inclusive. The array is sparse, and
 =cut
 
 #void h3GetFaces(H3Index h, int* out);
-$ffi->attach(h3GetFaces => ['uint64', 'int'] => 'void');
+$ffi->attach(h3GetFaces => ['uint64_t', 'int'] => 'void');
 
 =head2 maxFaceCount
 
@@ -179,7 +179,7 @@ Returns the maximum number of icosahedron faces the given H3 index may intersect
 =cut
 
 #int maxFaceCount(H3Index h3);
-$ffi->attach(maxFaceCount => ['uint64'] => 'int');
+$ffi->attach(maxFaceCount => ['uint64_t'] => 'int');
 
 =head1 Grid traversal functions
 
@@ -198,7 +198,7 @@ Output is placed in the provided array in no particular order. Elements of the o
 =cut
 
 #void kRing(H3Index origin, int k, H3Index* out);
-$ffi->attach(kRing => ['uint64', 'int', 'array_h3_index_t'] => 'void');
+$ffi->attach(kRing => ['uint64_t', 'int', 'array_h3_index_t'] => 'void');
 
 =head2 maxKringSize
 
@@ -220,7 +220,7 @@ Output is placed in the provided array in no particular order. Elements of the o
 =cut
 
 #void kRingDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(kRingDistances => ['uint64', 'int', 'array_h3_index_t', 'int *'] => 'void');
+$ffi->attach(kRingDistances => ['uint64_t', 'int', 'array_h3_index_t', 'int *'] => 'void');
 
 =head2 hexRange
 
@@ -235,7 +235,7 @@ Returns 0 if no pentagonal distortion is encountered.
 =cut
 
 #int hexRange(H3Index origin, int k, H3Index* out);
-$ffi->attach(hexRange => ['uint64', 'int', 'array_h3_index_t'] => 'int');
+$ffi->attach(hexRange => ['uint64_t', 'int', 'array_h3_index_t'] => 'int');
 
 =head2 hexRangeDistances
 
@@ -250,7 +250,7 @@ Returns 0 if no pentagonal distortion is encountered.
 =cut
 
 #int hexRangeDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(hexRangeDistances => ['uint64', 'int', 'array_h3_index_t', 'int*'] => 'int');
+$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'array_h3_index_t', 'int*'] => 'int');
 
 =head2 hexRanges
 
