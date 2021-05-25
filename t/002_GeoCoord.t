@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
 
-use Test::More tests => 10;
+use Test::More tests => 12;
 BEGIN { use_ok('Geo::H3::FFI') };
 
 my $lat        = 40.689167;
@@ -21,9 +21,20 @@ is($geo->lat, $lat_rad, 'lat');
 is($geo->lon, $lon_rad, 'lon');
 
 my $resolution = 10;
-my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);
+{
+  my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);
 
-#$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
-#8a2a1072b59ffff
-is($index, '622236750694711295', 'h3->index');
-is(sprintf("%x", $index), '8a2a1072b59ffff', 'sprintf');
+  #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
+  #8a2a1072b59ffff
+  is($index, '622236750694711295', 'h3->index');
+  is(sprintf("%x", $index), '8a2a1072b59ffff', 'sprintf');
+}
+
+{
+  my $index      = Geo::H3::FFI::geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+
+  #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
+  #8a2a1072b59ffff
+  is($index, '622236750694711295', 'h3->index');
+  is(sprintf("%x", $index), '8a2a1072b59ffff', 'sprintf');
+}

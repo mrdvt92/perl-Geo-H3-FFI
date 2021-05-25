@@ -40,7 +40,7 @@ These function are used for finding the H3 index containing coordinates, and for
 
 Indexes the location at the specified resolution, returning the index of the cell containing the location.
 
-  my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
+  my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat_rad, lon=>$lon_rad}); #isa Geo::H3::FFI::GeoCoord
   my $resolution = 8;                                                   #isa Int in (0 .. 15)
   my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);            #isa Int
 
@@ -50,6 +50,22 @@ Returns 0 on error.
 
 #H3Index geoToH3(const GeoCoord *g, int res);
 $ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t');
+
+=head2 geoToH3Wrapper
+
+  my $index = Geo::H3::FFI::geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+
+=cut
+
+sub geoToH3Wrapper {
+  my %input = @_;
+  my $lat   = $input{'lat'}; die unless defined $lat;
+  my $lon   = $input{'lon'}; die unless defined $lon;
+  my $res   = $input{'resolution'} || 0;
+  my $geo   = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
+  my $index = geoToH3($geo, $res);                                 #isa Int
+  return $index;
+}
 
 =head2 h3ToGeo
 

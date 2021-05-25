@@ -105,3 +105,4 @@ undirectional
 h3ToGeoBoundaryWrapper
 h3ToGeoWrapper
 h3ToStringWrapper
+geoToH3Wrapper
