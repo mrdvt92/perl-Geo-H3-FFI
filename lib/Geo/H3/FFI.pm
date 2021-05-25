@@ -38,11 +38,11 @@ These function are used for finding the H3 index containing coordinates, and for
 
 =head2 geoToH3
 
-  H3Index geoToH3(const GeoCoord *g, int res);
-
 Indexes the location at the specified resolution, returning the index of the cell containing the location.
 
-  my $H3Index = geoToH3($GeoCoord, $resolution);
+  my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
+  my $resolution = 8;                                                   #isa Int in (0 .. 15)
+  my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);            #isa Int
 
 Returns 0 on error.
 
@@ -53,29 +53,53 @@ $ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t');
 
 =head2 h3ToGeo
 
-  void h3ToGeo(H3Index h3, GeoCoord *g);
-
 Finds the centroid of the index.
 
-  my $Geo = h3ToGeo($H3Index);
+  my $geo = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
+  Geo::H3::FFI::h3ToGeo($index, $geo);
 
 =cut
 
 #void h3ToGeo(H3Index h3, GeoCoord *g);
 $ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void');
 
-=head2 h3ToGeoBoundary
+=head2 h3ToGeoWrapper
 
-  void h3ToGeoBoundary(H3Index h3, GeoBoundary *gp);
+  my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::GeoCoord
+
+=cut
+
+sub h3ToGeoWrapper {
+  my $index = shift;
+  my $geo   = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
+  h3ToGeo($index, $geo);
+  return $geo;
+}
+
+=head2 h3ToGeoBoundary
 
 Finds the boundary of the index.
 
-  my $Boundary = h3ToGeoBoundary($H3Index);
+  my $gb = Geo::H3::FFI::GeoBoundary->new({});
+  Geo::H3::FFI::h3ToGeoBoundary($index, $gb);
 
 =cut
 
 #void h3ToGeoBoundary(H3Index h3, GeoBoundary *gp);
 $ffi->attach(h3ToGeoBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
+
+=head2 h3ToGeoBoundaryWrapper
+
+  my $GeoBoundary = h3ToGeoBoundaryWrapper($index); #isa Geo::H3::FFI::GeoBoundary
+
+=cut
+
+sub h3ToGeoBoundaryWrapper {
+  my $index = shift;
+  my $gb    = Geo::H3::FFI::GeoBoundary->new({});
+  h3ToGeoBoundary($index, $gb);
+  return $gb;
+}
 
 =head1 Index Inspection Functions
 
@@ -85,6 +109,8 @@ These functions provide metadata about an H3 index, such as its resolution or ba
 
 Returns the resolution of the index.
 
+  my $resolution = h3GetResolution($index); #isa Int
+
 =cut
 
 #int h3GetResolution(H3Index h);
@@ -93,6 +119,8 @@ $ffi->attach(h3GetResolution => ['uint64_t'] => 'int');
 =head2 h3GetBaseCell
 
 Returns the base cell number of the index.
+
+  my $BaseCell = h3GetBaseCell($index);
 
 =cut
 
@@ -119,13 +147,13 @@ Converts the H3Index representation of the index to the string representation. s
 #void h3ToString(H3Index h, char *str, size_t sz);
 $ffi->attach(h3ToString => ['uint64_t', 'string', 'size_t'] => 'void');
 
-=head2 h3ToString_wrapper
+=head2 h3ToStringWrapper
 
-  my $string = h3ToString_wrapper($index);
+  my $string = h3ToStringWrapper($index);
 
 =cut
 
-sub h3ToString_wrapper {
+sub h3ToStringWrapper {
   my $index  = shift;
   my $size   = 17; #Must be 17 for API to work
   my $string = "\000" x $size;
@@ -138,6 +166,8 @@ sub h3ToString_wrapper {
 
 Returns non-zero if this is a valid H3 index.
 
+  my isValid = h3IsValid($index);
+
 =cut
 
 #int h3IsValid(H3Index h);
@@ -147,6 +177,8 @@ $ffi->attach(h3IsValid => ['uint64_t'] => 'int');
 
 Returns non-zero if this index has a resolution with Class III orientation.
 
+  my $isRC3 = h3IsResClassIII($index);
+
 =cut
 
 #int h3IsResClassIII(H3Index h);
@@ -155,6 +187,8 @@ $ffi->attach(h3IsResClassIII => ['uint64_t'] => 'int');
 =head2 h3IsPentagon
 
 Returns non-zero if this index represents a pentagonal cell.
+
+  my $isPentagon = h3IsPentagon($index);
 
 =cut
 
@@ -645,7 +679,7 @@ Number of pentagon H3 indexes per resolution. This is always 12, but provided as
 
 =head2 pointDistKm
 
-Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lng pairs) in kilometers.
+Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in kilometers.
 
 =cut
 
@@ -653,7 +687,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 
 =head2 pointDistM
 
-Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lng pairs) in meters.
+Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in meters.
 
 =cut
 
@@ -661,7 +695,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 
 =head2 pointDistRads
 
-Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lng pairs) in radians.
+Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in radians.
 
 =cut
 

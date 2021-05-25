@@ -27,6 +27,6 @@ is($out, sprintf("%x", $index), 'perl h3ToString');
 
 
 {
-  my $output = Geo::H3::FFI::h3ToString_wrapper($index);
-  is($output, '8a2a1072b59ffff', 'h3ToString_wrapper');
+  my $output = Geo::H3::FFI::h3ToStringWrapper($index);
+  is($output, '8a2a1072b59ffff', 'h3ToStringWrapper');
 }

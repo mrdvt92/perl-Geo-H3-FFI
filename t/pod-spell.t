@@ -102,3 +102,6 @@ pointDistRads
 radians
 res0IndexCount
 undirectional
+h3ToGeoBoundaryWrapper
+h3ToGeoWrapper
+h3ToStringWrapper
