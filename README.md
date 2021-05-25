@@ -16,29 +16,35 @@ These function are used for finding the H3 index containing coordinates, and for
 
 ## geoToH3
 
-    H3Index geoToH3(const GeoCoord *g, int res);
-
 Indexes the location at the specified resolution, returning the index of the cell containing the location.
 
-    my $H3Index = geoToH3($GeoCoord, $resolution);
+    my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
+    my $resolution = 8;                                                   #isa Int in (0 .. 15)
+    my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);            #isa Int
 
 Returns 0 on error.
 
 ## h3ToGeo
 
-    void h3ToGeo(H3Index h3, GeoCoord *g);
-
 Finds the centroid of the index.
 
-    my $Geo = h3ToGeo($H3Index);
+    my $geo = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
+    Geo::H3::FFI::h3ToGeo($index, $geo);
+
+## h3ToGeoWrapper
+
+    my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::GeoCoord
 
 ## h3ToGeoBoundary
 
-    void h3ToGeoBoundary(H3Index h3, GeoBoundary *gp);
-
 Finds the boundary of the index.
 
-    my $Boundary = h3ToGeoBoundary($H3Index);
+    my $gb = Geo::H3::FFI::GeoBoundary->new({});
+    Geo::H3::FFI::h3ToGeoBoundary($index, $gb);
+
+## h3ToGeoBoundaryWrapper
+
+    my $GeoBoundary = h3ToGeoBoundaryWrapper($index); #isa Geo::H3::FFI::GeoBoundary
 
 # Index Inspection Functions
 
@@ -48,9 +54,13 @@ These functions provide metadata about an H3 index, such as its resolution or ba
 
 Returns the resolution of the index.
 
+    my $resolution = h3GetResolution($index); #isa Int
+
 ## h3GetBaseCell
 
 Returns the base cell number of the index.
+
+    my $BaseCell = h3GetBaseCell($index);
 
 ## stringToH3
 
@@ -62,17 +72,27 @@ Returns 0 on error.
 
 Converts the H3Index representation of the index to the string representation. str must be at least of length 17.
 
+## h3ToStringWrapper
+
+    my $string = h3ToStringWrapper($index);
+
 ## h3IsValid
 
 Returns non-zero if this is a valid H3 index.
+
+    my isValid = h3IsValid($index);
 
 ## h3IsResClassIII
 
 Returns non-zero if this index has a resolution with Class III orientation.
 
+    my $isRC3 = h3IsResClassIII($index);
+
 ## h3IsPentagon
 
 Returns non-zero if this index represents a pentagonal cell.
+
+    my $isPentagon = h3IsPentagon($index);
 
 ## h3GetFaces
 
@@ -350,15 +370,15 @@ Number of pentagon H3 indexes per resolution. This is always 12, but provided as
 
 ## pointDistKm
 
-Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lng pairs) in kilometers.
+Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in kilometers.
 
 ## pointDistM
 
-Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lng pairs) in meters.
+Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in meters.
 
 ## pointDistRads
 
-Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lng pairs) in radians.
+Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in radians.
 
 # SEE ALSO
 

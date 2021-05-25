@@ -204,7 +204,7 @@ Faces are represented as integers from 0-19, inclusive. The array is sparse, and
 =cut
 
 #void h3GetFaces(H3Index h, int* out);
-$ffi->attach(h3GetFaces => ['uint64_t', 'int'] => 'void');
+$ffi->attach(h3GetFaces => ['uint64_t', 'int *'] => 'void');
 
 =head2 maxFaceCount
 
@@ -295,6 +295,7 @@ Returns 0 if no pentagonal distortion was encountered. Otherwise, output is unde
 =cut
 
 #int hexRanges(H3Index* h3Set, int length, int k, H3Index* out);
+$ffi->attach(hexRanges => ['uint64_t *', 'int', 'int', 'uint64_t *'] => 'int');
 
 =head2 hexRing
 
