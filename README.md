@@ -18,11 +18,15 @@ These function are used for finding the H3 index containing coordinates, and for
 
 Indexes the location at the specified resolution, returning the index of the cell containing the location.
 
-    my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
+    my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat_rad, lon=>$lon_rad}); #isa Geo::H3::FFI::GeoCoord
     my $resolution = 8;                                                   #isa Int in (0 .. 15)
     my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);            #isa Int
 
 Returns 0 on error.
+
+## geoToH3Wrapper
+
+    my $index = Geo::H3::FFI::geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
 
 ## h3ToGeo
 
@@ -60,13 +64,17 @@ Returns the resolution of the index.
 
 Returns the base cell number of the index.
 
-    my $BaseCell = h3GetBaseCell($index);
+    my $baseCell = h3GetBaseCell($index);
 
 ## stringToH3
 
 Converts the string representation to H3Index (uint64\_t) representation.
 
 Returns 0 on error.
+
+## stringToH3Wrapper
+
+    my $index = stringToH3Wrapper($string);
 
 ## h3ToString
 

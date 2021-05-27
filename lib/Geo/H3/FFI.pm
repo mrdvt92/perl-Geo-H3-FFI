@@ -136,7 +136,7 @@ $ffi->attach(h3GetResolution => ['uint64_t'] => 'int');
 
 Returns the base cell number of the index.
 
-  my $BaseCell = h3GetBaseCell($index);
+  my $baseCell = h3GetBaseCell($index);
 
 =cut
 
@@ -153,6 +153,18 @@ Returns 0 on error.
 
 #H3Index stringToH3(const char *str);
 $ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64_t');
+
+=head2 stringToH3Wrapper
+
+  my $index = stringToH3Wrapper($string);
+
+=cut
+
+sub stringToH3Wrapper {
+  my $string = shift;
+  my $index  = stringToH3($string, length($string));
+  return $index;
+}
 
 =head2 h3ToString
 
