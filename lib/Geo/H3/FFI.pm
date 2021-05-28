@@ -605,6 +605,7 @@ Average hexagon area in square kilometers at the given resolution.
 =cut
 
 #double hexAreaKm2(int res);
+$ffi->attach(hexAreaKm2 => ['int'] => 'double');
 
 =head2 hexAreaM2
 
@@ -613,6 +614,7 @@ Average hexagon area in square meters at the given resolution.
 =cut
 
 #double hexAreaM2(int res);
+$ffi->attach(hexAreaM2 => ['int'] => 'double');
 
 =head2 cellAreaM2
 
@@ -621,6 +623,7 @@ Exact area of specific cell in square meters.
 =cut
 
 #double cellAreaM2(H3Index h);
+$ffi->attach(cellAreaM2 => ['uint64_t'] => 'double');
 
 =head2 cellAreaRads2
 
@@ -629,6 +632,7 @@ Exact area of specific cell in square radians.
 =cut
 
 #double cellAreaRads2(H3Index h);
+$ffi->attach(cellAreaRads2 => ['uint64_t'] => 'double');
 
 =head2 edgeLengthKm
 
@@ -637,6 +641,7 @@ Average hexagon edge length in kilometers at the given resolution.
 =cut
 
 #double edgeLengthKm(int res);
+$ffi->attach(edgeLengthKm=> ['int'] => 'double');
 
 =head2 edgeLengthM
 
@@ -645,6 +650,7 @@ Average hexagon edge length in meters at the given resolution.
 =cut
 
 #double edgeLengthM(int res);
+$ffi->attach(edgeLengthM=> ['int'] => 'double');
 
 =head2 exactEdgeLengthKm
 
@@ -653,6 +659,7 @@ Exact edge length of specific unidirectional edge in kilometers.
 =cut
 
 #double exactEdgeLengthKm(H3Index edge);
+$ffi->attach(exactEdgeLengthKm=> ['uint64_t'] => 'double');
 
 =head2 exactEdgeLengthM
 
@@ -661,6 +668,7 @@ Exact edge length of specific unidirectional edge in meters.
 =cut
 
 #double exactEdgeLengthM(H3Index edge);
+$ffi->attach(exactEdgeLengthM => ['uint64_t'] => 'double');
 
 =head2 exactEdgeLengthRads
 
@@ -669,6 +677,7 @@ Exact edge length of specific unidirectional edge in radians.
 =cut
 
 #double exactEdgeLengthRads(H3Index edge);
+$ffi->attach(exactEdgeLengthRads => ['uint64_t'] => 'double');
 
 =head2 numHexagons
 
@@ -677,6 +686,7 @@ Number of unique H3 indexes at the given resolution.
 =cut
 
 #int64_t numHexagons(int res);
+$ffi->attach(numHexagons => ['int'] => 'int64_t');
 
 =head2 getRes0Indexes
 
@@ -693,6 +703,7 @@ Number of resolution 0 H3 indexes.
 =cut
 
 #int res0IndexCount();
+$ffi->attach(res0IndexCount => [] => 'int');
 
 =head2 getPentagonIndexes
 
@@ -709,6 +720,7 @@ Number of pentagon H3 indexes per resolution. This is always 12, but provided as
 =cut
 
 #int pentagonIndexCount();
+$ffi->attach(pentagonIndexCount => [] => 'int');
 
 =head2 pointDistKm
 
@@ -717,6 +729,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 =cut
 
 #double pointDistKm(const GeoCoord *a, const GeoCoord *b);
+$ffi->attach(pointDistKm => ['geo_coord_t', 'geo_coord_t'] => 'double');
 
 =head2 pointDistM
 
@@ -725,6 +738,8 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 =cut
 
 #double pointDistM(const GeoCoord *a, const GeoCoord *b);
+$ffi->attach(pointDistM => ['geo_coord_t', 'geo_coord_t'] => 'double');
+
 
 =head2 pointDistRads
 
@@ -733,6 +748,8 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 =cut
 
 #double pointDistRads(const GeoCoord *a, const GeoCoord *b);
+$ffi->attach(pointDistRads => ['geo_coord_t', 'geo_coord_t'] => 'double');
+
 
 =head1 SEE ALSO
 
