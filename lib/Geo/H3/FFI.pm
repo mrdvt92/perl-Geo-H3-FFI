@@ -19,6 +19,8 @@ package Geo::H3::FFI::ArrayH3Index  {FFI::C->array (array_h3_index_t  => [h3_ind
 package Geo::H3::FFI::GeoCoord      {FFI::C->struct(geo_coord_t       => [lat         => 'double', lon   => 'double'           ])};
 package Geo::H3::FFI::ArrayGeoCoord {FFI::C->array (array_geo_coord_t => [geo_coord_t => 10                                    ])};
 package Geo::H3::FFI::GeoBoundary   {FFI::C->struct(geo_boundary_t    => [num_verts   => 'int'   , verts => 'array_geo_coord_t'])};
+#package Geo::H3::FFI::ArrayInt      {FFI::C->array (array_int_t       => [int         => 19                                    ])};
+#package Geo::H3::FFI::ArrayIntStruct{FFI::C->struct(array_int_struct_t=> ['array'     => 'array_int_t'                         ])};
 
 =head1 NAME
 
@@ -232,7 +234,7 @@ Faces are represented as integers from 0-19, inclusive. The array is sparse, and
 =cut
 
 #void h3GetFaces(H3Index h, int* out);
-$ffi->attach(h3GetFaces => ['uint64_t', 'int *'] => 'void');
+#$ffi->attach(h3GetFaces => ['uint64_t', 'array_int_struct_t'] => 'void');
 
 =head2 maxFaceCount
 
@@ -401,6 +403,7 @@ Returns the parent (coarser) index containing h.
 =cut
 
 #H3Index h3ToParent(H3Index h, int parentRes);
+$ffi->attach(h3ToParent => ['uint64_t', 'int'] => 'uint64_t');
 
 =head2 h3ToChildren
 
@@ -423,6 +426,7 @@ Returns the center child (finer) index contained by h at resolution childRes.
 =cut
 
 #H3Index h3ToCenterChild(H3Index h, int childRes);
+$ffi->attach(h3ToCenterChild => ['uint64_t', 'int'] => 'uint64_t');
 
 =head2 compact
 

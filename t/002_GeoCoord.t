@@ -3,7 +3,7 @@ use warnings;
 use Data::Dumper qw{Dumper};
 
 use Test::More tests => 12;
-BEGIN { use_ok('Geo::H3::FFI') };
+require_ok 'Geo::H3::FFI';
 
 my $lat        = 40.689167;
 my $lon        = -74.044444;

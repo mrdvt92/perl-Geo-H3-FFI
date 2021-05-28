@@ -3,7 +3,7 @@ use warnings;
 use Data::Dumper qw{Dumper};
 
 use Test::More tests => 24;
-BEGIN { use_ok('Geo::H3::FFI') };
+require_ok 'Geo::H3::FFI';
 
 my $index      = '622236750694711295';
 my $gb         = Geo::H3::FFI::GeoBoundary->new({});

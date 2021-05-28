@@ -4,7 +4,7 @@ use warnings;
 use Test::More tests => 10;
 use Test::Number::Delta;
 
-BEGIN { use_ok('Geo::H3::FFI') };
+require_ok 'Geo::H3::FFI';
 
 my $geo = Geo::H3::FFI::GeoCoord->new({});
 isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
