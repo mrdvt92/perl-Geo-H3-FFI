@@ -360,6 +360,7 @@ Number of indexes in a line from the start index to the end index, to be used fo
 =cut
 
 #int h3LineSize(H3Index start, H3Index end);
+$ffi->attach(h3LineSize => ['uint64_t', 'uint64_t'] => 'int');
 
 =head2 h3Distance
 
@@ -370,6 +371,7 @@ Returns a negative number if finding the distance failed. Finding the distance c
 =cut
 
 #int h3Distance(H3Index origin, H3Index h3);
+$ffi->attach(h3Distance => ['uint64_t', 'uint64_t'] => 'int');
 
 =head2 experimentalH3ToLocalIj
 
@@ -418,6 +420,7 @@ Populates children with the indexes contained by h at resolution childRes. child
 =cut
 
 #int maxH3ToChildrenSize(H3Index h, int childRes);
+$ffi->attach(maxH3ToChildrenSize => ['uint64_t', 'int'] => 'int');
 
 =head2 h3ToCenterChild
 
@@ -515,6 +518,7 @@ Returns 1 if the indexes are neighbors, 0 otherwise.
 =cut
 
 #int h3IndexesAreNeighbors(H3Index origin, H3Index destination);
+$ffi->attach(h3IndexesAreNeighbors => ['uint64_t', 'uint64_t'] => 'int');
 
 =head2 getH3UnidirectionalEdge
 
@@ -525,6 +529,7 @@ Returns 0 on error.
 =cut
 
 #H3Index getH3UnidirectionalEdge(H3Index origin, H3Index destination);
+$ffi->attach(getH3UnidirectionalEdge => ['uint64_t', 'uint64_t'] => 'uint64_t');
 
 =head2 h3UnidirectionalEdgeIsValid
 
@@ -535,6 +540,7 @@ Returns 1 if it is a unidirectional edge H3Index, otherwise 0.
 =cut
 
 #int h3UnidirectionalEdgeIsValid(H3Index edge);
+$ffi->attach(h3UnidirectionalEdgeIsValid => ['uint64_t'] => 'int');
 
 =head2 getOriginH3IndexFromUnidirectionalEdge
 
@@ -543,6 +549,7 @@ Returns the origin hexagon from the unidirectional edge H3Index.
 =cut
 
 #H3Index getOriginH3IndexFromUnidirectionalEdge(H3Index edge);
+$ffi->attach(getOriginH3IndexFromUnidirectionalEdge => ['uint64_t'] => 'uint64_t');
 
 =head2 getDestinationH3IndexFromUnidirectionalEdge
 
@@ -551,6 +558,7 @@ Returns the destination hexagon from the unidirectional edge H3Index.
 =cut
 
 #H3Index getDestinationH3IndexFromUnidirectionalEdge(H3Index edge);
+$ffi->attach(getDestinationH3IndexFromUnidirectionalEdge => ['uint64_t'] => 'uint64_t');
 
 =head2 getH3IndexesFromUnidirectionalEdge
 
@@ -575,6 +583,7 @@ Provides the coordinates defining the unidirectional edge.
 =cut
 
 #void getH3UnidirectionalEdgeBoundary(H3Index edge, GeoBoundary* gb);
+$ffi->attach(getH3UnidirectionalEdgeBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
 
 =head1 Miscellaneous H3 functions
 
