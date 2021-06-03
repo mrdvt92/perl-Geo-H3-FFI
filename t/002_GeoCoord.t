@@ -2,16 +2,19 @@ use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 require_ok 'Geo::H3::FFI';
+
+my $obj = Geo::H3::FFI->new;
+isa_ok($obj, 'Geo::H3::FFI');
 
 my $lat        = 40.689167;
 my $lon        = -74.044444;
-my $lat_rad    = Geo::H3::FFI::degsToRads($lat);
-my $lon_rad    = Geo::H3::FFI::degsToRads($lon);
+my $lat_rad    = $obj->degsToRads($lat);
+my $lon_rad    = $obj->degsToRads($lon);
 
-is($lat, Geo::H3::FFI::radsToDegs($lat_rad), 'lat round trip');
-is($lon, Geo::H3::FFI::radsToDegs($lon_rad), 'lon round trip');
+is($lat, $obj->radsToDegs($lat_rad), 'lat round trip');
+is($lon, $obj->radsToDegs($lon_rad), 'lon round trip');
 
 my $geo        = Geo::H3::FFI::GeoCoord->new({lat => $lat_rad, lon => $lon_rad});
 isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
@@ -22,7 +25,7 @@ is($geo->lon, $lon_rad, 'lon');
 
 my $resolution = 10;
 {
-  my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);
+  my $index      = $obj->geoToH3($geo, $resolution);
 
   #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
   #8a2a1072b59ffff
@@ -31,7 +34,7 @@ my $resolution = 10;
 }
 
 {
-  my $index      = Geo::H3::FFI::geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+  my $index      = $obj->geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
 
   #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
   #8a2a1072b59ffff

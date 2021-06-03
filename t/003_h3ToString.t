@@ -1,8 +1,12 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 require_ok 'Geo::H3::FFI';
+
+my $obj = Geo::H3::FFI->new;
+isa_ok($obj, 'Geo::H3::FFI');
+
 
 my $string = '8a2a1072b59ffff';
 my $index  = '622236750694711295';
@@ -13,7 +17,7 @@ is($index, '622236750694711295', 'index before');
 like($out, qr/\A\000{17}\Z/, 'out before');
 is($size, 17, 'size before');
 
-my $void1  = Geo::H3::FFI::h3ToString($index, $out, $size);
+my $void1  = $obj->h3ToString($index, $out, $size);
 
 is($index, '622236750694711295', 'index after');
 {
@@ -27,6 +31,6 @@ is($out, sprintf("%x", $index), 'perl h3ToString');
 
 
 {
-  my $output = Geo::H3::FFI::h3ToStringWrapper($index);
+  my $output = $obj->h3ToStringWrapper($index);
   is($output, '8a2a1072b59ffff', 'h3ToStringWrapper');
 }

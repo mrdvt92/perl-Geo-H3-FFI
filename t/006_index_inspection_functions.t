@@ -1,7 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 require_ok 'Geo::H3::FFI';
+
+my $obj = Geo::H3::FFI->new;
+isa_ok($obj, 'Geo::H3::FFI');
 
 #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
 #8a2a1072b59ffff
@@ -34,23 +37,23 @@ my $basecell   = 21;
 
 diag(sprintf('Index: %x', $index));
 
-my $h3GetResolution = Geo::H3::FFI::h3GetResolution($index);
+my $h3GetResolution = $obj->h3GetResolution($index);
 is($h3GetResolution, $resolution, 'h3GetResolution');
 
-my $h3GetBaseCell   = Geo::H3::FFI::h3GetBaseCell($index);
+my $h3GetBaseCell   = $obj->h3GetBaseCell($index);
 is($h3GetBaseCell, $basecell, 'h3GetBaseCell');
 
-my $h3IsValid   = Geo::H3::FFI::h3IsValid($index);
+my $h3IsValid   = $obj->h3IsValid($index);
 ok($h3IsValid, 'h3IsValid');
 
-my $xh3IsResClassIII   = Geo::H3::FFI::h3IsResClassIII($index);
+my $xh3IsResClassIII   = $obj->h3IsResClassIII($index);
 ok(!$xh3IsResClassIII, 'h3IsResClassIII');
 
-my $h3IsResClassIII   = Geo::H3::FFI::h3IsResClassIII($parent);
+my $h3IsResClassIII   = $obj->h3IsResClassIII($parent);
 ok($h3IsResClassIII, 'h3IsResClassIII');
 
-my $h3IsPentagon   = Geo::H3::FFI::h3IsPentagon($index);
+my $h3IsPentagon   = $obj->h3IsPentagon($index);
 ok(!$h3IsPentagon, 'h3IsPentagon');
 
-my $maxFaceCount   = Geo::H3::FFI::maxFaceCount($index);
+my $maxFaceCount   = $obj->maxFaceCount($index);
 is($maxFaceCount, 2, 'maxFaceCount');

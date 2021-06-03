@@ -22,6 +22,12 @@ package Geo::H3::FFI::GeoBoundary   {FFI::C->struct(geo_boundary_t    => [num_ve
 #package Geo::H3::FFI::ArrayInt      {FFI::C->array (array_int_t       => [int         => 19                                    ])};
 #package Geo::H3::FFI::ArrayIntStruct{FFI::C->struct(array_int_struct_t=> ['array'     => 'array_int_t'                         ])};
 
+sub _oowrapper {
+  my $xs   = shift;
+  my $self = shift;
+  return $xs->(@_);
+}
+
 =head1 NAME
 
 Geo::H3::FFI - Perl FFI binding to H3 library functions
@@ -51,7 +57,7 @@ Returns 0 on error.
 =cut
 
 #H3Index geoToH3(const GeoCoord *g, int res);
-$ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t');
+$ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t' => \&_oowrapper);
 
 =head2 geoToH3Wrapper
 
@@ -60,12 +66,13 @@ $ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t');
 =cut
 
 sub geoToH3Wrapper {
+  my $self  = shift;
   my %input = @_;
   my $lat   = $input{'lat'}; die unless defined $lat;
   my $lon   = $input{'lon'}; die unless defined $lon;
   my $res   = $input{'resolution'} || 0;
   my $geo   = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
-  my $index = geoToH3($geo, $res);                                 #isa Int
+  my $index = $self->geoToH3($geo, $res);                                 #isa Int
   return $index;
 }
 
@@ -79,7 +86,7 @@ Finds the centroid of the index.
 =cut
 
 #void h3ToGeo(H3Index h3, GeoCoord *g);
-$ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void');
+$ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void' => \&_oowrapper);
 
 =head2 h3ToGeoWrapper
 
@@ -88,9 +95,10 @@ $ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void');
 =cut
 
 sub h3ToGeoWrapper {
+  my $self  = shift;
   my $index = shift;
   my $geo   = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
-  h3ToGeo($index, $geo);
+  $self->h3ToGeo($index, $geo);
   return $geo;
 }
 
@@ -104,7 +112,7 @@ Finds the boundary of the index.
 =cut
 
 #void h3ToGeoBoundary(H3Index h3, GeoBoundary *gp);
-$ffi->attach(h3ToGeoBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
+$ffi->attach(h3ToGeoBoundary => ['uint64_t', 'geo_boundary_t'] => 'void' => \&_oowrapper);
 
 =head2 h3ToGeoBoundaryWrapper
 
@@ -113,9 +121,10 @@ $ffi->attach(h3ToGeoBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
 =cut
 
 sub h3ToGeoBoundaryWrapper {
+  my $self  = shift;
   my $index = shift;
   my $gb    = Geo::H3::FFI::GeoBoundary->new({});
-  h3ToGeoBoundary($index, $gb);
+  $self->h3ToGeoBoundary($index, $gb);
   return $gb;
 }
 
@@ -132,7 +141,7 @@ Returns the resolution of the index.
 =cut
 
 #int h3GetResolution(H3Index h);
-$ffi->attach(h3GetResolution => ['uint64_t'] => 'int');
+$ffi->attach(h3GetResolution => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 h3GetBaseCell
 
@@ -143,7 +152,7 @@ Returns the base cell number of the index.
 =cut
 
 #int h3GetBaseCell(H3Index h);
-$ffi->attach(h3GetBaseCell => ['uint64_t'] => 'int');
+$ffi->attach(h3GetBaseCell => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 stringToH3
 
@@ -154,7 +163,7 @@ Returns 0 on error.
 =cut
 
 #H3Index stringToH3(const char *str);
-$ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64_t');
+$ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64_t' => \&_oowrapper);
 
 =head2 stringToH3Wrapper
 
@@ -163,8 +172,9 @@ $ffi->attach(stringToH3 => ['string', 'size_t'] => 'uint64_t');
 =cut
 
 sub stringToH3Wrapper {
+  my $self   = shift;
   my $string = shift;
-  my $index  = stringToH3($string, length($string));
+  my $index  = $self->stringToH3($string, length($string));
   return $index;
 }
 
@@ -175,7 +185,7 @@ Converts the H3Index representation of the index to the string representation. s
 =cut
 
 #void h3ToString(H3Index h, char *str, size_t sz);
-$ffi->attach(h3ToString => ['uint64_t', 'string', 'size_t'] => 'void');
+$ffi->attach(h3ToString => ['uint64_t', 'string', 'size_t'] => 'void' => \&_oowrapper);
 
 =head2 h3ToStringWrapper
 
@@ -184,10 +194,11 @@ $ffi->attach(h3ToString => ['uint64_t', 'string', 'size_t'] => 'void');
 =cut
 
 sub h3ToStringWrapper {
+  my $self   = shift;
   my $index  = shift;
   my $size   = 17; #Must be 17 for API to work
   my $string = "\000" x $size;
-  h3ToString($index, $string, $size);
+  $self->h3ToString($index, $string, $size);
   $string    =~ s/\000+\Z//;
   return $string;
 }
@@ -201,7 +212,7 @@ Returns non-zero if this is a valid H3 index.
 =cut
 
 #int h3IsValid(H3Index h);
-$ffi->attach(h3IsValid => ['uint64_t'] => 'int');
+$ffi->attach(h3IsValid => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 h3IsResClassIII
 
@@ -212,7 +223,7 @@ Returns non-zero if this index has a resolution with Class III orientation.
 =cut
 
 #int h3IsResClassIII(H3Index h);
-$ffi->attach(h3IsResClassIII => ['uint64_t'] => 'int');
+$ffi->attach(h3IsResClassIII => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 h3IsPentagon
 
@@ -223,7 +234,7 @@ Returns non-zero if this index represents a pentagonal cell.
 =cut
 
 #int h3IsPentagon(H3Index h);
-$ffi->attach(h3IsPentagon => ['uint64_t'] => 'int');
+$ffi->attach(h3IsPentagon => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 h3GetFaces
 
@@ -234,7 +245,7 @@ Faces are represented as integers from 0-19, inclusive. The array is sparse, and
 =cut
 
 #void h3GetFaces(H3Index h, int* out);
-#$ffi->attach(h3GetFaces => ['uint64_t', 'array_int_struct_t'] => 'void');
+#$ffi->attach(h3GetFaces => ['uint64_t', 'array_int_struct_t'] => 'void' => \&_oowrapper);
 
 =head2 maxFaceCount
 
@@ -243,7 +254,7 @@ Returns the maximum number of icosahedron faces the given H3 index may intersect
 =cut
 
 #int maxFaceCount(H3Index h3);
-$ffi->attach(maxFaceCount => ['uint64_t'] => 'int');
+$ffi->attach(maxFaceCount => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head1 Grid traversal functions
 
@@ -262,7 +273,7 @@ Output is placed in the provided array in no particular order. Elements of the o
 =cut
 
 #void kRing(H3Index origin, int k, H3Index* out);
-$ffi->attach(kRing => ['uint64_t', 'int', 'array_h3_index_t'] => 'void');
+$ffi->attach(kRing => ['uint64_t', 'int', 'array_h3_index_t'] => 'void' => \&_oowrapper);
 
 =head2 maxKringSize
 
@@ -271,7 +282,7 @@ Maximum number of indices that result from the kRing algorithm with the given k.
 =cut
 
 #int maxKringSize(int k);
-$ffi->attach(maxKringSize => ['int'] => 'int');
+$ffi->attach(maxKringSize => ['int'] => 'int' => \&_oowrapper);
 
 =head2 kRingDistances
 
@@ -284,7 +295,7 @@ Output is placed in the provided array in no particular order. Elements of the o
 =cut
 
 #void kRingDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(kRingDistances => ['uint64_t', 'int', 'array_h3_index_t', 'int *'] => 'void');
+$ffi->attach(kRingDistances => ['uint64_t', 'int', 'array_h3_index_t', 'int *'] => 'void' => \&_oowrapper);
 
 =head2 hexRange
 
@@ -299,7 +310,7 @@ Returns 0 if no pentagonal distortion is encountered.
 =cut
 
 #int hexRange(H3Index origin, int k, H3Index* out);
-$ffi->attach(hexRange => ['uint64_t', 'int', 'array_h3_index_t'] => 'int');
+$ffi->attach(hexRange => ['uint64_t', 'int', 'array_h3_index_t'] => 'int' => \&_oowrapper);
 
 =head2 hexRangeDistances
 
@@ -314,7 +325,7 @@ Returns 0 if no pentagonal distortion is encountered.
 =cut
 
 #int hexRangeDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'array_h3_index_t', 'int*'] => 'int');
+$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'array_h3_index_t', 'int*'] => 'int' => \&_oowrapper);
 
 =head2 hexRanges
 
@@ -325,7 +336,7 @@ Returns 0 if no pentagonal distortion was encountered. Otherwise, output is unde
 =cut
 
 #int hexRanges(H3Index* h3Set, int length, int k, H3Index* out);
-$ffi->attach(hexRanges => ['uint64_t *', 'int', 'int', 'uint64_t *'] => 'int');
+$ffi->attach(hexRanges => ['uint64_t *', 'int', 'int', 'uint64_t *'] => 'int' => \&_oowrapper);
 
 =head2 hexRing
 
@@ -336,7 +347,7 @@ Returns 0 if no pentagonal distortion was encountered.
 =cut
 
 #int hexRing(H3Index origin, int k, H3Index* out);
-$ffi->attach(hexRing => ['uint64_t', 'int', 'uint64_t *'] => 'int');
+$ffi->attach(hexRing => ['uint64_t', 'int', 'uint64_t *'] => 'int' => \&_oowrapper);
 
 =head2 h3Line
 
@@ -353,7 +364,7 @@ Notes:
 =cut
 
 #int h3Line(H3Index start, H3Index end, H3Index* out);
-$ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_t*'] => 'int');
+$ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_t*'] => 'int' => \&_oowrapper);
 
 =head2 h3LineSize
 
@@ -362,7 +373,7 @@ Number of indexes in a line from the start index to the end index, to be used fo
 =cut
 
 #int h3LineSize(H3Index start, H3Index end);
-$ffi->attach(h3LineSize => ['uint64_t', 'uint64_t'] => 'int');
+$ffi->attach(h3LineSize => ['uint64_t', 'uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 h3Distance
 
@@ -373,7 +384,7 @@ Returns a negative number if finding the distance failed. Finding the distance c
 =cut
 
 #int h3Distance(H3Index origin, H3Index h3);
-$ffi->attach(h3Distance => ['uint64_t', 'uint64_t'] => 'int');
+$ffi->attach(h3Distance => ['uint64_t', 'uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 experimentalH3ToLocalIj
 
@@ -407,7 +418,7 @@ Returns the parent (coarser) index containing h.
 =cut
 
 #H3Index h3ToParent(H3Index h, int parentRes);
-$ffi->attach(h3ToParent => ['uint64_t', 'int'] => 'uint64_t');
+$ffi->attach(h3ToParent => ['uint64_t', 'int'] => 'uint64_t' => \&_oowrapper);
 
 =head2 h3ToChildren
 
@@ -416,14 +427,14 @@ Populates children with the indexes contained by h at resolution childRes. child
 =cut
 
 #void h3ToChildren(H3Index h, int childRes, H3Index *children);
-$ffi->attach(h3ToChildren => ['uint64_t', 'int', 'uint64_t*'] => 'void');
+$ffi->attach(h3ToChildren => ['uint64_t', 'int', 'uint64_t*'] => 'void' => \&_oowrapper);
 
 =head2 maxH3ToChildrenSize
 
 =cut
 
 #int maxH3ToChildrenSize(H3Index h, int childRes);
-$ffi->attach(maxH3ToChildrenSize => ['uint64_t', 'int'] => 'int');
+$ffi->attach(maxH3ToChildrenSize => ['uint64_t', 'int'] => 'int' => \&_oowrapper);
 
 =head2 h3ToCenterChild
 
@@ -432,7 +443,7 @@ Returns the center child (finer) index contained by h at resolution childRes.
 =cut
 
 #H3Index h3ToCenterChild(H3Index h, int childRes);
-$ffi->attach(h3ToCenterChild => ['uint64_t', 'int'] => 'uint64_t');
+$ffi->attach(h3ToCenterChild => ['uint64_t', 'int'] => 'uint64_t' => \&_oowrapper);
 
 =head2 compact
 
@@ -443,7 +454,7 @@ Returns 0 on success.
 =cut
 
 #int compact(const H3Index *h3Set, H3Index *compactedSet, const int numHexes);
-$ffi->attach(compact => ['uint64_t*', 'uint64_t*', 'int'] => 'int');
+$ffi->attach(compact => ['uint64_t*', 'uint64_t*', 'int'] => 'int' => \&_oowrapper);
 
 =head2 uncompact
 
@@ -454,7 +465,7 @@ Returns 0 on success.
 =cut
 
 #int uncompact(const H3Index *compactedSet, const int numHexes, H3Index *h3Set, const int maxHexes, const int res);
-$ffi->attach(uncompact => ['uint64_t*', 'int', 'uint64_t*', 'int', 'int'] => 'int');
+$ffi->attach(uncompact => ['uint64_t*', 'int', 'uint64_t*', 'int', 'int'] => 'int' => \&_oowrapper);
 
 =head2 maxUncompactSize
 
@@ -463,7 +474,7 @@ Returns the size of the array needed by uncompact.
 =cut
 
 #int maxUncompactSize(const H3Index *compactedSet, const int numHexes, const int res)
-$ffi->attach(maxUncompactSize => ['uint64_t*', 'int', 'int'] => 'int');
+$ffi->attach(maxUncompactSize => ['uint64_t*', 'int', 'int'] => 'int' => \&_oowrapper);
 
 =head1 Region functions
 
@@ -524,7 +535,7 @@ Returns 1 if the indexes are neighbors, 0 otherwise.
 =cut
 
 #int h3IndexesAreNeighbors(H3Index origin, H3Index destination);
-$ffi->attach(h3IndexesAreNeighbors => ['uint64_t', 'uint64_t'] => 'int');
+$ffi->attach(h3IndexesAreNeighbors => ['uint64_t', 'uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 getH3UnidirectionalEdge
 
@@ -535,7 +546,7 @@ Returns 0 on error.
 =cut
 
 #H3Index getH3UnidirectionalEdge(H3Index origin, H3Index destination);
-$ffi->attach(getH3UnidirectionalEdge => ['uint64_t', 'uint64_t'] => 'uint64_t');
+$ffi->attach(getH3UnidirectionalEdge => ['uint64_t', 'uint64_t'] => 'uint64_t' => \&_oowrapper);
 
 =head2 h3UnidirectionalEdgeIsValid
 
@@ -546,7 +557,7 @@ Returns 1 if it is a unidirectional edge H3Index, otherwise 0.
 =cut
 
 #int h3UnidirectionalEdgeIsValid(H3Index edge);
-$ffi->attach(h3UnidirectionalEdgeIsValid => ['uint64_t'] => 'int');
+$ffi->attach(h3UnidirectionalEdgeIsValid => ['uint64_t'] => 'int' => \&_oowrapper);
 
 =head2 getOriginH3IndexFromUnidirectionalEdge
 
@@ -555,7 +566,7 @@ Returns the origin hexagon from the unidirectional edge H3Index.
 =cut
 
 #H3Index getOriginH3IndexFromUnidirectionalEdge(H3Index edge);
-$ffi->attach(getOriginH3IndexFromUnidirectionalEdge => ['uint64_t'] => 'uint64_t');
+$ffi->attach(getOriginH3IndexFromUnidirectionalEdge => ['uint64_t'] => 'uint64_t' => \&_oowrapper);
 
 =head2 getDestinationH3IndexFromUnidirectionalEdge
 
@@ -564,7 +575,7 @@ Returns the destination hexagon from the unidirectional edge H3Index.
 =cut
 
 #H3Index getDestinationH3IndexFromUnidirectionalEdge(H3Index edge);
-$ffi->attach(getDestinationH3IndexFromUnidirectionalEdge => ['uint64_t'] => 'uint64_t');
+$ffi->attach(getDestinationH3IndexFromUnidirectionalEdge => ['uint64_t'] => 'uint64_t' => \&_oowrapper);
 
 =head2 getH3IndexesFromUnidirectionalEdge
 
@@ -589,7 +600,7 @@ Provides the coordinates defining the unidirectional edge.
 =cut
 
 #void getH3UnidirectionalEdgeBoundary(H3Index edge, GeoBoundary* gb);
-$ffi->attach(getH3UnidirectionalEdgeBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
+$ffi->attach(getH3UnidirectionalEdgeBoundary => ['uint64_t', 'geo_boundary_t'] => 'void' => \&_oowrapper);
 
 =head1 Miscellaneous H3 functions
 
@@ -602,7 +613,7 @@ Converts degrees to radians.
 =cut
 
 #double degsToRads(double degrees);
-$ffi->attach(degsToRads => ['double'] => 'double');
+$ffi->attach(degsToRads => ['double'] => 'double' => \&_oowrapper);
 
 =head2 radsToDegs
 
@@ -611,7 +622,7 @@ Converts radians to degrees.
 =cut
 
 #double radsToDegs(double radians);
-$ffi->attach(radsToDegs => ['double'] => 'double');
+$ffi->attach(radsToDegs => ['double'] => 'double' => \&_oowrapper);
 
 =head2 hexAreaKm2
 
@@ -620,7 +631,7 @@ Average hexagon area in square kilometers at the given resolution.
 =cut
 
 #double hexAreaKm2(int res);
-$ffi->attach(hexAreaKm2 => ['int'] => 'double');
+$ffi->attach(hexAreaKm2 => ['int'] => 'double' => \&_oowrapper);
 
 =head2 hexAreaM2
 
@@ -629,7 +640,7 @@ Average hexagon area in square meters at the given resolution.
 =cut
 
 #double hexAreaM2(int res);
-$ffi->attach(hexAreaM2 => ['int'] => 'double');
+$ffi->attach(hexAreaM2 => ['int'] => 'double' => \&_oowrapper);
 
 =head2 cellAreaM2
 
@@ -638,7 +649,7 @@ Exact area of specific cell in square meters.
 =cut
 
 #double cellAreaM2(H3Index h);
-$ffi->attach(cellAreaM2 => ['uint64_t'] => 'double');
+$ffi->attach(cellAreaM2 => ['uint64_t'] => 'double' => \&_oowrapper);
 
 =head2 cellAreaRads2
 
@@ -647,7 +658,7 @@ Exact area of specific cell in square radians.
 =cut
 
 #double cellAreaRads2(H3Index h);
-$ffi->attach(cellAreaRads2 => ['uint64_t'] => 'double');
+$ffi->attach(cellAreaRads2 => ['uint64_t'] => 'double' => \&_oowrapper);
 
 =head2 edgeLengthKm
 
@@ -656,7 +667,7 @@ Average hexagon edge length in kilometers at the given resolution.
 =cut
 
 #double edgeLengthKm(int res);
-$ffi->attach(edgeLengthKm=> ['int'] => 'double');
+$ffi->attach(edgeLengthKm=> ['int'] => 'double' => \&_oowrapper);
 
 =head2 edgeLengthM
 
@@ -665,7 +676,7 @@ Average hexagon edge length in meters at the given resolution.
 =cut
 
 #double edgeLengthM(int res);
-$ffi->attach(edgeLengthM=> ['int'] => 'double');
+$ffi->attach(edgeLengthM=> ['int'] => 'double' => \&_oowrapper);
 
 =head2 exactEdgeLengthKm
 
@@ -674,7 +685,7 @@ Exact edge length of specific unidirectional edge in kilometers.
 =cut
 
 #double exactEdgeLengthKm(H3Index edge);
-$ffi->attach(exactEdgeLengthKm=> ['uint64_t'] => 'double');
+$ffi->attach(exactEdgeLengthKm=> ['uint64_t'] => 'double' => \&_oowrapper);
 
 =head2 exactEdgeLengthM
 
@@ -683,7 +694,7 @@ Exact edge length of specific unidirectional edge in meters.
 =cut
 
 #double exactEdgeLengthM(H3Index edge);
-$ffi->attach(exactEdgeLengthM => ['uint64_t'] => 'double');
+$ffi->attach(exactEdgeLengthM => ['uint64_t'] => 'double' => \&_oowrapper);
 
 =head2 exactEdgeLengthRads
 
@@ -692,7 +703,7 @@ Exact edge length of specific unidirectional edge in radians.
 =cut
 
 #double exactEdgeLengthRads(H3Index edge);
-$ffi->attach(exactEdgeLengthRads => ['uint64_t'] => 'double');
+$ffi->attach(exactEdgeLengthRads => ['uint64_t'] => 'double' => \&_oowrapper);
 
 =head2 numHexagons
 
@@ -701,7 +712,7 @@ Number of unique H3 indexes at the given resolution.
 =cut
 
 #int64_t numHexagons(int res);
-$ffi->attach(numHexagons => ['int'] => 'int64_t');
+$ffi->attach(numHexagons => ['int'] => 'int64_t' => \&_oowrapper);
 
 =head2 getRes0Indexes
 
@@ -718,7 +729,7 @@ Number of resolution 0 H3 indexes.
 =cut
 
 #int res0IndexCount();
-$ffi->attach(res0IndexCount => [] => 'int');
+$ffi->attach(res0IndexCount => [] => 'int' => \&_oowrapper);
 
 =head2 getPentagonIndexes
 
@@ -735,7 +746,7 @@ Number of pentagon H3 indexes per resolution. This is always 12, but provided as
 =cut
 
 #int pentagonIndexCount();
-$ffi->attach(pentagonIndexCount => [] => 'int');
+$ffi->attach(pentagonIndexCount => [] => 'int' => \&_oowrapper);
 
 =head2 pointDistKm
 
@@ -744,7 +755,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 =cut
 
 #double pointDistKm(const GeoCoord *a, const GeoCoord *b);
-$ffi->attach(pointDistKm => ['geo_coord_t', 'geo_coord_t'] => 'double');
+$ffi->attach(pointDistKm => ['geo_coord_t', 'geo_coord_t'] => 'double' => \&_oowrapper);
 
 =head2 pointDistM
 
@@ -753,7 +764,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 =cut
 
 #double pointDistM(const GeoCoord *a, const GeoCoord *b);
-$ffi->attach(pointDistM => ['geo_coord_t', 'geo_coord_t'] => 'double');
+$ffi->attach(pointDistM => ['geo_coord_t', 'geo_coord_t'] => 'double' => \&_oowrapper);
 
 
 =head2 pointDistRads
@@ -763,7 +774,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 =cut
 
 #double pointDistRads(const GeoCoord *a, const GeoCoord *b);
-$ffi->attach(pointDistRads => ['geo_coord_t', 'geo_coord_t'] => 'double');
+$ffi->attach(pointDistRads => ['geo_coord_t', 'geo_coord_t'] => 'double' => \&_oowrapper);
 
 
 =head1 SEE ALSO

@@ -2,14 +2,17 @@ use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
 
-use Test::More tests => 24;
+use Test::More tests => 25;
 require_ok 'Geo::H3::FFI';
+
+my $obj = Geo::H3::FFI->new;
+isa_ok($obj, 'Geo::H3::FFI');
 
 my $index      = '622236750694711295';
 my $gb         = Geo::H3::FFI::GeoBoundary->new({});
 isa_ok($gb, 'Geo::H3::FFI::GeoBoundary');
 
-my $void       = Geo::H3::FFI::h3ToGeoBoundary($index, $gb);
+my $void       = $obj->h3ToGeoBoundary($index, $gb);
 isa_ok($gb, 'Geo::H3::FFI::GeoBoundary');
 #diag(Dumper({gb=>$gb}));
 
@@ -25,6 +28,6 @@ foreach my $count (1 .. $gb->num_verts) {
   isa_ok($vert, 'Geo::H3::FFI::GeoCoord');
   can_ok($vert, 'lat');
   can_ok($vert, 'lon');
-  diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, Geo::H3::FFI::radsToDegs($vert->lat),
-                                                                $vert->lon, Geo::H3::FFI::radsToDegs($vert->lon)));
+  diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, $obj->radsToDegs($vert->lat),
+                                                                $vert->lon, $obj->radsToDegs($vert->lon)));
 }
