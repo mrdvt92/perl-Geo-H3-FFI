@@ -7,6 +7,20 @@ SYNOPSIS
 DESCRIPTION
     Perl FFI binding to H3 library functions
 
+CONSTRUCTORS
+  new
+      my $gh3 = Geo::H3::FFI->new;
+
+  geo
+    Returns a GeoCoord struct
+
+      my $geo = $gh3->geo(lat=>$lat_rad, lon=>$lon_rad); #isa Geo::H3::FFI::Struct::GeoCoord
+
+  gb
+    Returns a GeoCoord struct
+
+      my $gb = $gh3->gb(); #isa Geo::H3::FFI::Struct::GeoBoundary
+
 Indexing Functions
     These function are used for finding the H3 index containing coordinates,
     and for finding the center and boundary of H3 indexes.
@@ -15,32 +29,32 @@ Indexing Functions
     Indexes the location at the specified resolution, returning the index of
     the cell containing the location.
 
-      my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat_rad, lon=>$lon_rad}); #isa Geo::H3::FFI::GeoCoord
-      my $resolution = 8;                                                   #isa Int in (0 .. 15)
-      my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);            #isa Int
+      my $geo        = $gh3->geo(lat=>$lat_rad, lon=>$lon_rad);   #isa Geo::H3::FFI::Struct::GeoCoord
+      my $resolution = 8;                                         #isa Int in (0 .. 15)
+      my $index      = $gh3->geoToH3($geo, $resolution);          #isa Int64
 
     Returns 0 on error.
 
   geoToH3Wrapper
-      my $index = Geo::H3::FFI::geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+      my $index = $gh3->geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
 
   h3ToGeo
     Finds the centroid of the index.
 
-      my $geo = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
-      Geo::H3::FFI::h3ToGeo($index, $geo);
+      my $geo = $gh3->GeoCoord->new(); #isa Geo::H3::FFI::Struct::GeoCoord
+      $gh3->h3ToGeo($index, $geo);
 
   h3ToGeoWrapper
-      my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::GeoCoord
+      my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::Struct::GeoCoord
 
   h3ToGeoBoundary
     Finds the boundary of the index.
 
-      my $gb = Geo::H3::FFI::GeoBoundary->new({});
-      Geo::H3::FFI::h3ToGeoBoundary($index, $gb);
+      my $gb = $gh3->gb;
+      $gh3->h3ToGeoBoundary($index, $gb);
 
   h3ToGeoBoundaryWrapper
-      my $GeoBoundary = h3ToGeoBoundaryWrapper($index); #isa Geo::H3::FFI::GeoBoundary
+      my $GeoBoundary = $gh3->h3ToGeoBoundaryWrapper($index); #isa Geo::H3::FFI::Struct::GeoBoundary
 
 Index Inspection Functions
     These functions provide metadata about an H3 index, such as its
@@ -50,7 +64,7 @@ Index Inspection Functions
   h3GetResolution
     Returns the resolution of the index.
 
-      my $resolution = h3GetResolution($index); #isa Int
+      my $resolution = $gh3->h3GetResolution($index); #isa Int
 
   h3GetBaseCell
     Returns the base cell number of the index.
