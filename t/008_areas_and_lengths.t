@@ -71,12 +71,12 @@ my $lat1      = 40.689167;
 my $lon1      = -74.044444;
 my $lat1_rad  = $obj->degsToRads($lat1);
 my $lon1_rad  = $obj->degsToRads($lon1);
-my $geo1      = Geo::H3::FFI::GeoCoord->new({lat => $lat1_rad, lon => $lon1_rad});
+my $geo1      = $obj->geo(lat => $lat1_rad, lon => $lon1_rad);
 my $lat2      = 40.703468;
 my $lon2      = -74.016821;
 my $lat2_rad  = $obj->degsToRads($lat2);
 my $lon2_rad  = $obj->degsToRads($lon2);
-my $geo2      = Geo::H3::FFI::GeoCoord->new({lat => $lat2_rad, lon => $lon2_rad});
+my $geo2      = $obj->geo(lat => $lat2_rad, lon => $lon2_rad);
 
 #$ffi->attach(pointDistKm => ['geo_coord_t', 'geo_coord_t'] => 'double');
 my $pointDistKm = $obj->pointDistKm($geo1, $geo2);

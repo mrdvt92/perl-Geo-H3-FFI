@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::Number::Delta;
-use Test::More tests => 25;
+use Test::More tests => 26;
 require_ok 'Geo::H3::FFI';
 
 my $obj = Geo::H3::FFI->new;
@@ -90,14 +90,15 @@ is($getOriginH3IndexFromUnidirectionalEdge, 0, 'getOriginH3IndexFromUnidirection
 my $getDestinationH3IndexFromUnidirectionalEdge = $obj->getDestinationH3IndexFromUnidirectionalEdge($index1);
 is($getDestinationH3IndexFromUnidirectionalEdge, 0, 'getDestinationH3IndexFromUnidirectionalEdge');
 
-my $gb       = Geo::H3::FFI::GeoBoundary->new({});
+my $gb       = $obj->gb;
+isa_ok($gb, 'Geo::H3::FFI::Struct::GeoBoundary');
 #$ffi->attach(getH3UnidirectionalEdgeBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
 my $getH3UnidirectionalEdgeBoundary = $obj->getH3UnidirectionalEdgeBoundary($index1, $gb);
 is($getH3UnidirectionalEdgeBoundary, undef, 'getH3UnidirectionalEdgeBoundary');
 use Data::Dumper qw{Dumper};
 diag(Dumper({gb=>$gb}));
 
-isa_ok($gb, 'Geo::H3::FFI::GeoBoundary');
+isa_ok($gb, 'Geo::H3::FFI::Struct::GeoBoundary');
 can_ok($gb, 'num_verts');
 can_ok($gb, 'verts');
 is($gb->num_verts, 0, '$gb->num_verts');
@@ -107,7 +108,7 @@ is($gb->num_verts, 0, '$gb->num_verts');
 foreach my $count (1 .. $gb->num_verts) {
   my $vert = $gb->verts->[$count - 1]; #$gb->verts sizeof 10
   #diag(Dumper({vert=>$vert}));
-  isa_ok($vert, 'Geo::H3::FFI::GeoCoord');
+  isa_ok($vert, 'Geo::H3::FFI::Struct::GeoCoord');
   can_ok($vert, 'lat');
   can_ok($vert, 'lon');
   diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, $obj->radsToDegs($vert->lat),

@@ -16,8 +16,8 @@ my $lon_rad    = $obj->degsToRads($lon);
 is($lat, $obj->radsToDegs($lat_rad), 'lat round trip');
 is($lon, $obj->radsToDegs($lon_rad), 'lon round trip');
 
-my $geo        = Geo::H3::FFI::GeoCoord->new({lat => $lat_rad, lon => $lon_rad});
-isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
+my $geo        = $obj->geo(lat => $lat_rad, lon => $lon_rad);
+isa_ok($geo, 'Geo::H3::FFI::Struct::GeoCoord');
 can_ok($geo, 'lat');
 can_ok($geo, 'lon');
 is($geo->lat, $lat_rad, 'lat');

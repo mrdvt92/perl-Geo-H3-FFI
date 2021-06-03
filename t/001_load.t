@@ -9,8 +9,8 @@ require_ok 'Geo::H3::FFI';
 my $obj = Geo::H3::FFI->new;
 isa_ok($obj, 'Geo::H3::FFI');
 
-my $geo = Geo::H3::FFI::GeoCoord->new({});
-isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
+my $geo = $obj->geo;
+isa_ok($geo, 'Geo::H3::FFI::Struct::GeoCoord');
 
 my $pi  = '3.14159265358979';
 

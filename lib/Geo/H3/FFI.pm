@@ -14,13 +14,13 @@ FFI::C->ffi($ffi); #Beware: Class setting
 
 #$ffi->type('char *' => 'char_p');
 #$ffi->load_custom_type('::StringPointer' => 'string_p');
-package Geo::H3::FFI::H3Index       {FFI::C->struct(h3_index_t        => [index       => 'uint64_t'                            ])};
-package Geo::H3::FFI::ArrayH3Index  {FFI::C->array (array_h3_index_t  => [h3_index_t  => 255                                   ])};
-package Geo::H3::FFI::GeoCoord      {FFI::C->struct(geo_coord_t       => [lat         => 'double', lon   => 'double'           ])};
-package Geo::H3::FFI::ArrayGeoCoord {FFI::C->array (array_geo_coord_t => [geo_coord_t => 10                                    ])};
-package Geo::H3::FFI::GeoBoundary   {FFI::C->struct(geo_boundary_t    => [num_verts   => 'int'   , verts => 'array_geo_coord_t'])};
-#package Geo::H3::FFI::ArrayInt      {FFI::C->array (array_int_t       => [int         => 19                                    ])};
-#package Geo::H3::FFI::ArrayIntStruct{FFI::C->struct(array_int_struct_t=> ['array'     => 'array_int_t'                         ])};
+package Geo::H3::FFI::Struct::H3Index     {FFI::C->struct(h3_index_t        => [index       => 'uint64_t'                            ])};
+package Geo::H3::FFI::Array::H3Index      {FFI::C->array (array_h3_index_t  => [h3_index_t  => 255                                   ])};
+package Geo::H3::FFI::Struct::GeoCoord    {FFI::C->struct(geo_coord_t       => [lat         => 'double', lon   => 'double'           ])};
+package Geo::H3::FFI::Array::GeoCoord     {FFI::C->array (array_geo_coord_t => [geo_coord_t => 10                                    ])};
+package Geo::H3::FFI::Struct::GeoBoundary {FFI::C->struct(geo_boundary_t    => [num_verts   => 'int'   , verts => 'array_geo_coord_t'])};
+#package Geo::H3::FFI::Array::Int         {FFI::C->array (array_int_t       => [int         => 19                                    ])};
+#package Geo::H3::FFI::Struct::ArrayIntStruct {FFI::C->struct(array_int_struct_t=> ['array'     => 'array_int_t'                         ])};
 
 sub _oowrapper {
   my $xs   = shift;
@@ -40,6 +40,40 @@ Geo::H3::FFI - Perl FFI binding to H3 library functions
 
 Perl FFI binding to H3 library functions
 
+=head1 CONSTRUCTORS
+
+=head2 new
+
+  my $gh3 = Geo::H3::FFI->new;
+
+=head2 geo
+
+Returns a GeoCoord struct
+
+  my $geo = $gh3->geo(lat=>$lat_rad, lon=>$lon_rad); #isa Geo::H3::FFI::Struct::GeoCoord
+
+=cut
+
+sub geo {
+  my $self = shift;
+  my %hash = @_;
+  return Geo::H3::FFI::Struct::GeoCoord->new(\%hash);
+}
+
+=head2 gb
+
+Returns a GeoCoord struct
+
+  my $gb = $gh3->gb(); #isa Geo::H3::FFI::Struct::GeoBoundary
+
+=cut
+
+sub gb {
+  my $self = shift;
+  my %hash = @_;
+  return Geo::H3::FFI::Struct::GeoBoundary->new(\%hash);
+}
+
 =head1 Indexing Functions
 
 These function are used for finding the H3 index containing coordinates, and for finding the center and boundary of H3 indexes.
@@ -48,9 +82,9 @@ These function are used for finding the H3 index containing coordinates, and for
 
 Indexes the location at the specified resolution, returning the index of the cell containing the location.
 
-  my $geo        = Geo::H3::FFI::GeoCoord->new({lat=>$lat_rad, lon=>$lon_rad}); #isa Geo::H3::FFI::GeoCoord
-  my $resolution = 8;                                                   #isa Int in (0 .. 15)
-  my $index      = Geo::H3::FFI::geoToH3($geo, $resolution);            #isa Int
+  my $geo        = $gh3->geo(lat=>$lat_rad, lon=>$lon_rad);   #isa Geo::H3::FFI::Struct::GeoCoord
+  my $resolution = 8;                                         #isa Int in (0 .. 15)
+  my $index      = $gh3->geoToH3($geo, $resolution);          #isa Int64
 
 Returns 0 on error.
 
@@ -61,7 +95,7 @@ $ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t' => \&_oowrapper);
 
 =head2 geoToH3Wrapper
 
-  my $index = Geo::H3::FFI::geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+  my $index = $gh3->geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
 
 =cut
 
@@ -71,8 +105,8 @@ sub geoToH3Wrapper {
   my $lat   = $input{'lat'}; die unless defined $lat;
   my $lon   = $input{'lon'}; die unless defined $lon;
   my $res   = $input{'resolution'} || 0;
-  my $geo   = Geo::H3::FFI::GeoCoord->new({lat=>$lat, lon=>$lon}); #isa Geo::H3::FFI::GeoCoord
-  my $index = $self->geoToH3($geo, $res);                                 #isa Int
+  my $geo   = $self->geo(lat=>$lat, lon=>$lon); #isa Geo::H3::FFI::Struct::GeoCoord
+  my $index = $self->geoToH3($geo, $res);      #isa Int
   return $index;
 }
 
@@ -80,8 +114,8 @@ sub geoToH3Wrapper {
 
 Finds the centroid of the index.
 
-  my $geo = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
-  Geo::H3::FFI::h3ToGeo($index, $geo);
+  my $geo = $gh3->GeoCoord->new(); #isa Geo::H3::FFI::Struct::GeoCoord
+  $gh3->h3ToGeo($index, $geo);
 
 =cut
 
@@ -90,14 +124,14 @@ $ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void' => \&_oowrapper);
 
 =head2 h3ToGeoWrapper
 
-  my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::GeoCoord
+  my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::Struct::GeoCoord
 
 =cut
 
 sub h3ToGeoWrapper {
   my $self  = shift;
   my $index = shift;
-  my $geo   = Geo::H3::FFI::GeoCoord->new({}); #isa Geo::H3::FFI::GeoCoord
+  my $geo   = $self->geo; #isa Geo::H3::FFI::Struct::GeoCoord
   $self->h3ToGeo($index, $geo);
   return $geo;
 }
@@ -106,8 +140,8 @@ sub h3ToGeoWrapper {
 
 Finds the boundary of the index.
 
-  my $gb = Geo::H3::FFI::GeoBoundary->new({});
-  Geo::H3::FFI::h3ToGeoBoundary($index, $gb);
+  my $gb = $gh3->gb;
+  $gh3->h3ToGeoBoundary($index, $gb);
 
 =cut
 
@@ -116,14 +150,14 @@ $ffi->attach(h3ToGeoBoundary => ['uint64_t', 'geo_boundary_t'] => 'void' => \&_o
 
 =head2 h3ToGeoBoundaryWrapper
 
-  my $GeoBoundary = h3ToGeoBoundaryWrapper($index); #isa Geo::H3::FFI::GeoBoundary
+  my $GeoBoundary = $gh3->h3ToGeoBoundaryWrapper($index); #isa Geo::H3::FFI::Struct::GeoBoundary
 
 =cut
 
 sub h3ToGeoBoundaryWrapper {
   my $self  = shift;
   my $index = shift;
-  my $gb    = Geo::H3::FFI::GeoBoundary->new({});
+  my $gb    = $self->gb;
   $self->h3ToGeoBoundary($index, $gb);
   return $gb;
 }
@@ -136,7 +170,7 @@ These functions provide metadata about an H3 index, such as its resolution or ba
 
 Returns the resolution of the index.
 
-  my $resolution = h3GetResolution($index); #isa Int
+  my $resolution = $gh3->h3GetResolution($index); #isa Int
 
 =cut
 

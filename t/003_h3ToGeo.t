@@ -19,10 +19,10 @@ my $lon       = -74.0444313999;
 my $lat_rad   = $obj->degsToRads($lat);
 my $lon_rad   = $obj->degsToRads($lon);
 
-my $geo       = Geo::H3::FFI::GeoCoord->new({});        #empty structure
-isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
+my $geo       = $obj->geo;        #empty structure
+isa_ok($geo, 'Geo::H3::FFI::Struct::GeoCoord');
 
 my $void2     = $obj->h3ToGeo($index, $geo); #assigns into structure
-isa_ok($geo, 'Geo::H3::FFI::GeoCoord');
+isa_ok($geo, 'Geo::H3::FFI::Struct::GeoCoord');
 delta_within($geo->lat, $lat_rad, 1e-11, '$geo->lat');
 delta_within($geo->lon, $lon_rad, 1e-11, '$geo->lon');

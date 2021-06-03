@@ -9,11 +9,11 @@ my $obj = Geo::H3::FFI->new;
 isa_ok($obj, 'Geo::H3::FFI');
 
 my $index      = '622236750694711295';
-my $gb         = Geo::H3::FFI::GeoBoundary->new({});
-isa_ok($gb, 'Geo::H3::FFI::GeoBoundary');
+my $gb         = $obj->gb;
+isa_ok($gb, 'Geo::H3::FFI::Struct::GeoBoundary');
 
 my $void       = $obj->h3ToGeoBoundary($index, $gb);
-isa_ok($gb, 'Geo::H3::FFI::GeoBoundary');
+isa_ok($gb, 'Geo::H3::FFI::Struct::GeoBoundary');
 #diag(Dumper({gb=>$gb}));
 
 can_ok($gb, 'num_verts');
@@ -25,7 +25,7 @@ is($gb->num_verts, 6, '$gb->num_verts');
 foreach my $count (1 .. $gb->num_verts) {
   my $vert = $gb->verts->[$count - 1]; #$gb->verts sizeof 10
   #diag(Dumper({vert=>$vert}));
-  isa_ok($vert, 'Geo::H3::FFI::GeoCoord');
+  isa_ok($vert, 'Geo::H3::FFI::Struct::GeoCoord');
   can_ok($vert, 'lat');
   can_ok($vert, 'lon');
   diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, $obj->radsToDegs($vert->lat),
