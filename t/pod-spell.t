@@ -108,3 +108,4 @@ h3ToStringWrapper
 geoToH3Wrapper
 stringToH3Wrapper
 gb
+GeoBoundary

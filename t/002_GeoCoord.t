@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
 
-use Test::More tests => 13;
+use Test::More tests => 15;
 require_ok 'Geo::H3::FFI';
 
 my $obj = Geo::H3::FFI->new;
@@ -35,6 +35,14 @@ my $resolution = 10;
 
 {
   my $index      = $obj->geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+
+  #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
+  #8a2a1072b59ffff
+  is($index, '622236750694711295', 'h3->index');
+  is(sprintf("%x", $index), '8a2a1072b59ffff', 'sprintf');
+}
+{
+  my $index      = $obj->geoToH3Wrapper(lat=>$lat, lon=>$lon, resolution=>$resolution, uom=>"deg");
 
   #$ geoToH3 --lat 40.689167 --lon -74.044444 --resolution 10
   #8a2a1072b59ffff

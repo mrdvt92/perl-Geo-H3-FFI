@@ -50,6 +50,7 @@ Perl FFI binding to H3 library functions
 
 Returns a GeoCoord struct
 
+  my $geo = $gh3->geo; #empty struct                 #isa Geo::H3::FFI::Struct::GeoCoord
   my $geo = $gh3->geo(lat=>$lat_rad, lon=>$lon_rad); #isa Geo::H3::FFI::Struct::GeoCoord
 
 =cut
@@ -62,9 +63,9 @@ sub geo {
 
 =head2 gb
 
-Returns a GeoCoord struct
+Returns a GeoBoundary struct
 
-  my $gb = $gh3->gb(); #isa Geo::H3::FFI::Struct::GeoBoundary
+  my $gb = $gh3->gb; #empty struct      #isa Geo::H3::FFI::Struct::GeoBoundary
 
 =cut
 
@@ -96,6 +97,7 @@ $ffi->attach(geoToH3 => ['geo_coord_t', 'int'] => 'uint64_t' => \&_oowrapper);
 =head2 geoToH3Wrapper
 
   my $index = $gh3->geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+  my $index = $gh3->geoToH3Wrapper(lat=>$lat,     lon=>$lon,     resolution=>$resolution, uom=>"deg");
 
 =cut
 
@@ -104,9 +106,14 @@ sub geoToH3Wrapper {
   my %input = @_;
   my $lat   = $input{'lat'}; die unless defined $lat;
   my $lon   = $input{'lon'}; die unless defined $lon;
+  my $uom   = $input{'uom'} || 'rad';
+  if ($uom eq "deg") {
+    $lat = $self->degsToRads($lat);
+    $lon = $self->degsToRads($lon);
+  }
   my $res   = $input{'resolution'} || 0;
   my $geo   = $self->geo(lat=>$lat, lon=>$lon); #isa Geo::H3::FFI::Struct::GeoCoord
-  my $index = $self->geoToH3($geo, $res);      #isa Int
+  my $index = $self->geoToH3($geo, $res);       #isa Int64
   return $index;
 }
 
@@ -114,7 +121,7 @@ sub geoToH3Wrapper {
 
 Finds the centroid of the index.
 
-  my $geo = $gh3->GeoCoord->new(); #isa Geo::H3::FFI::Struct::GeoCoord
+  my $geo = $gh3->geo; #isa Geo::H3::FFI::Struct::GeoCoord
   $gh3->h3ToGeo($index, $geo);
 
 =cut
