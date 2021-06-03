@@ -336,6 +336,7 @@ Returns 0 if no pentagonal distortion was encountered.
 =cut
 
 #int hexRing(H3Index origin, int k, H3Index* out);
+$ffi->attach(hexRing => ['uint64_t', 'int', 'uint64_t *'] => 'int');
 
 =head2 h3Line
 
@@ -352,6 +353,7 @@ Notes:
 =cut
 
 #int h3Line(H3Index start, H3Index end, H3Index* out);
+$ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_t*'] => 'int');
 
 =head2 h3LineSize
 
@@ -414,6 +416,7 @@ Populates children with the indexes contained by h at resolution childRes. child
 =cut
 
 #void h3ToChildren(H3Index h, int childRes, H3Index *children);
+$ffi->attach(h3ToChildren => ['uint64_t', 'int', 'uint64_t*'] => 'void');
 
 =head2 maxH3ToChildrenSize
 
@@ -440,6 +443,7 @@ Returns 0 on success.
 =cut
 
 #int compact(const H3Index *h3Set, H3Index *compactedSet, const int numHexes);
+$ffi->attach(compact => ['uint64_t*', 'uint64_t*', 'int'] => 'int');
 
 =head2 uncompact
 
@@ -450,6 +454,7 @@ Returns 0 on success.
 =cut
 
 #int uncompact(const H3Index *compactedSet, const int numHexes, H3Index *h3Set, const int maxHexes, const int res);
+$ffi->attach(uncompact => ['uint64_t*', 'int', 'uint64_t*', 'int', 'int'] => 'int');
 
 =head2 maxUncompactSize
 
@@ -458,6 +463,7 @@ Returns the size of the array needed by uncompact.
 =cut
 
 #int maxUncompactSize(const H3Index *compactedSet, const int numHexes, const int res)
+$ffi->attach(maxUncompactSize => ['uint64_t*', 'int', 'int'] => 'int');
 
 =head1 Region functions
 
