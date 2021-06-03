@@ -20,13 +20,14 @@ Perl FFI binding to H3 library functions
 
 Returns a GeoCoord struct
 
+    my $geo = $gh3->geo; #empty struct                 #isa Geo::H3::FFI::Struct::GeoCoord
     my $geo = $gh3->geo(lat=>$lat_rad, lon=>$lon_rad); #isa Geo::H3::FFI::Struct::GeoCoord
 
 ## gb
 
-Returns a GeoCoord struct
+Returns a GeoBoundary struct
 
-    my $gb = $gh3->gb(); #isa Geo::H3::FFI::Struct::GeoBoundary
+    my $gb = $gh3->gb; #empty struct      #isa Geo::H3::FFI::Struct::GeoBoundary
 
 # Indexing Functions
 
@@ -45,12 +46,13 @@ Returns 0 on error.
 ## geoToH3Wrapper
 
     my $index = $gh3->geoToH3Wrapper(lat=>$lat_rad, lon=>$lon_rad, resolution=>$resolution);
+    my $index = $gh3->geoToH3Wrapper(lat=>$lat,     lon=>$lon,     resolution=>$resolution, uom=>"deg");
 
 ## h3ToGeo
 
 Finds the centroid of the index.
 
-    my $geo = $gh3->GeoCoord->new(); #isa Geo::H3::FFI::Struct::GeoCoord
+    my $geo = $gh3->geo; #isa Geo::H3::FFI::Struct::GeoCoord
     $gh3->h3ToGeo($index, $geo);
 
 ## h3ToGeoWrapper
