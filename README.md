@@ -128,8 +128,8 @@ Find all icosahedron faces intersected by a given H3 index and places them in th
 
 Faces are represented as integers from 0-19, inclusive. The array is sparse, and empty (no intersection) array values are represented by -1.
 
-    my @array = ();
-    $gh3->h3GetFaces($index, \@array); #sets array to 
+    my @array = (-1,-1,-1,-1,-1);
+    $gh3->h3GetFaces($index, \@array); #sets values into initialized array
 
 ## h3GetFacesWrapper
 
@@ -145,13 +145,13 @@ Grid traversal allows finding cells in the vicinity of an origin cell, and deter
 
 ## kRing
 
-    void kRing(H3Index origin, int k, H3Index* out);
-
 k-rings produces indices within k distance of the origin index.
 
 k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all neighboring indices, and so on.
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
+
+## kRingWrapper
 
 ## maxKringSize
 
@@ -164,6 +164,10 @@ k-rings produces indices within k distance of the origin index.
 k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all neighboring indices, and so on.
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
+
+## kRingDistancesWrapper
+
+Returns a hash reference where the keys are the H3 index and values are the K distance for the given index and K value.
 
 ## hexRange
 

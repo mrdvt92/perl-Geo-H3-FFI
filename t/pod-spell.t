@@ -110,3 +110,5 @@ stringToH3Wrapper
 gb
 GeoBoundary
 h3GetFacesWrapper
+kRingWrapper
+kRingDistancesWrapper
