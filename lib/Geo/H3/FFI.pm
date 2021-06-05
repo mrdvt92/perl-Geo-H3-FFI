@@ -12,6 +12,7 @@ my $lib = FFI::CheckLib::find_lib_or_die(lib => 'h3');
 my $ffi = FFI::Platypus->new(api => 1, lib => $lib);
 FFI::C->ffi($ffi); #Beware: Class setting
 
+$ffi->type('int [5]' => 'int_aref_5');
 #$ffi->type('char *' => 'char_p');
 #$ffi->load_custom_type('::StringPointer' => 'string_p');
 package Geo::H3::FFI::Struct::H3Index     {FFI::C->struct(h3_index_t        => [index       => 'uint64_t'                            ])};
@@ -21,6 +22,7 @@ package Geo::H3::FFI::Array::GeoCoord     {FFI::C->array (array_geo_coord_t => [
 package Geo::H3::FFI::Struct::GeoBoundary {FFI::C->struct(geo_boundary_t    => [num_verts   => 'int'   , verts => 'array_geo_coord_t'])};
 #package Geo::H3::FFI::Array::Int         {FFI::C->array (array_int_t       => [int         => 19                                    ])};
 #package Geo::H3::FFI::Struct::ArrayIntStruct {FFI::C->struct(array_int_struct_t=> ['array'     => 'array_int_t'                         ])};
+
 
 sub _oowrapper {
   my $xs   = shift;
@@ -282,11 +284,29 @@ $ffi->attach(h3IsPentagon => ['uint64_t'] => 'int' => \&_oowrapper);
 Find all icosahedron faces intersected by a given H3 index and places them in the array out. out must be at least of length maxFaceCount(h).
 
 Faces are represented as integers from 0-19, inclusive. The array is sparse, and empty (no intersection) array values are represented by -1.
+ 
+  my @array = ();
+  $gh3->h3GetFaces($index, \@array); #sets array to 
 
 =cut
 
 #void h3GetFaces(H3Index h, int* out);
-#$ffi->attach(h3GetFaces => ['uint64_t', 'array_int_struct_t'] => 'void' => \&_oowrapper);
+$ffi->attach(h3GetFaces => ['uint64_t', 'int_aref_5'] => 'void' => \&_oowrapper);
+
+=head2 h3GetFacesWrapper
+
+  my $array_ref = $gh3->h3GetFacesWrapper($index);
+
+=cut
+
+sub h3GetFacesWrapper {
+  my $self  = shift;
+  my $index = shift;
+  my @array = (-1) x 5;
+  $self->h3GetFaces($index, \@array);
+  @array = grep {$_ > 0} @array;
+  return \@array;
+}
 
 =head2 maxFaceCount
 
@@ -819,6 +839,8 @@ $ffi->attach(pointDistRads => ['geo_coord_t', 'geo_coord_t'] => 'double' => \&_o
 
 
 =head1 SEE ALSO
+
+L<https://h3geo.org/docs/api/indexing>, L<https://h3geo.org/docs/community/bindings>, L<FFI::CheckLib>, L<FFI::Platypus>, L<FFI::C>
 
 =head1 AUTHOR
 

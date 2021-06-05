@@ -128,6 +128,13 @@ Find all icosahedron faces intersected by a given H3 index and places them in th
 
 Faces are represented as integers from 0-19, inclusive. The array is sparse, and empty (no intersection) array values are represented by -1.
 
+    my @array = ();
+    $gh3->h3GetFaces($index, \@array); #sets array to 
+
+## h3GetFacesWrapper
+
+    my $array_ref = $gh3->h3GetFacesWrapper($index);
+
 ## maxFaceCount
 
 Returns the maximum number of icosahedron faces the given H3 index may intersect.
@@ -409,6 +416,8 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 Gives the "great circle" or "haversine" distance between pairs of GeoCoord points (lat/lon pairs) in radians.
 
 # SEE ALSO
+
+[https://h3geo.org/docs/api/indexing](https://h3geo.org/docs/api/indexing), [https://h3geo.org/docs/community/bindings](https://h3geo.org/docs/community/bindings), [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus), [FFI::C](https://metacpan.org/pod/FFI::C)
 
 # AUTHOR
 

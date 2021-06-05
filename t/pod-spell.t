@@ -109,3 +109,4 @@ geoToH3Wrapper
 stringToH3Wrapper
 gb
 GeoBoundary
+h3GetFacesWrapper

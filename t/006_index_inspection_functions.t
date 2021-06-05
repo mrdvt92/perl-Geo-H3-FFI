@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 14;
 require_ok 'Geo::H3::FFI';
 
 my $obj = Geo::H3::FFI->new;
@@ -57,3 +57,13 @@ ok(!$h3IsPentagon, 'h3IsPentagon');
 
 my $maxFaceCount   = $obj->maxFaceCount($index);
 is($maxFaceCount, 2, 'maxFaceCount');
+
+my @array = (-1,-1,-1,-1,-1);
+my $h3GetFaces     = $obj->h3GetFaces($index, \@array);
+is($array[0], 2, 'h3GetFacesWrapper');
+is($array[1], -1, 'h3GetFacesWrapper');
+
+my $aref = $obj->h3GetFacesWrapper($index);
+isa_ok($aref, 'ARRAY');
+is(scalar(@$aref), 1, 'h3GetFacesWrapper size');
+is($aref->[0], 2, 'h3GetFacesWrapper');

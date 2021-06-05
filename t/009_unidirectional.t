@@ -95,8 +95,8 @@ isa_ok($gb, 'Geo::H3::FFI::Struct::GeoBoundary');
 #$ffi->attach(getH3UnidirectionalEdgeBoundary => ['uint64_t', 'geo_boundary_t'] => 'void');
 my $getH3UnidirectionalEdgeBoundary = $obj->getH3UnidirectionalEdgeBoundary($index1, $gb);
 is($getH3UnidirectionalEdgeBoundary, undef, 'getH3UnidirectionalEdgeBoundary');
-use Data::Dumper qw{Dumper};
-diag(Dumper({gb=>$gb}));
+#use Data::Dumper qw{Dumper};
+#diag(Dumper({gb=>$gb}));
 
 isa_ok($gb, 'Geo::H3::FFI::Struct::GeoBoundary');
 can_ok($gb, 'num_verts');
@@ -111,7 +111,7 @@ foreach my $count (1 .. $gb->num_verts) {
   isa_ok($vert, 'Geo::H3::FFI::Struct::GeoCoord');
   can_ok($vert, 'lat');
   can_ok($vert, 'lon');
-  diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, $obj->radsToDegs($vert->lat),
-                                                                $vert->lon, $obj->radsToDegs($vert->lon)));
+  #diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, $obj->radsToDegs($vert->lat),
+  #                                                             $vert->lon, $obj->radsToDegs($vert->lon)));
 }
 
