@@ -52,19 +52,25 @@ Returns 0 on error.
 
 Finds the centroid of the index.
 
-    my $geo = $gh3->geo; #isa Geo::H3::FFI::Struct::GeoCoord
+    my $geo = $gh3->geo;          #isa Geo::H3::FFI::Struct::GeoCoord
     $gh3->h3ToGeo($index, $geo);
+    my $lat = $geo->lat;          #isa Float in radians
+    my $lon = $geo->lon;          #isa Float in radians
 
 ## h3ToGeoWrapper
 
     my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::Struct::GeoCoord
+    my $lat = $geo->lat;          #isa Float in radians
+    my $lon = $geo->lon;          #isa Float in radians
 
 ## h3ToGeoBoundary
 
 Finds the boundary of the index.
 
-    my $gb = $gh3->gb;
-    $gh3->h3ToGeoBoundary($index, $gb);
+    my $gb        = $gh3->gb;           #isa empty Geo::H3::FFI::Struct::GeoBoundary
+    $gh3->h3ToGeoBoundary($index, $gb); #populates $gb
+    my $num_verts = $gb->num_verts;     #isa Int
+    my $vert0     = $gb->verts->[0];    #isa Geo::H3::FFI::Struct::GeoCord
 
 ## h3ToGeoBoundaryWrapper
 
@@ -92,6 +98,8 @@ Converts the string representation to H3Index (uint64\_t) representation.
 
 Returns 0 on error.
 
+    my $index  = $self->stringToH3($string, length($string));
+
 ## stringToH3Wrapper
 
     my $index = stringToH3Wrapper($string);
@@ -99,6 +107,11 @@ Returns 0 on error.
 ## h3ToString
 
 Converts the H3Index representation of the index to the string representation. str must be at least of length 17.
+
+    my $size   = 17; #Must be 17 for API to work
+    my $string = "\000" x $size;
+    $self->h3ToString($index, $string, $size);
+    $string    =~ s/\000+\Z//;
 
 ## h3ToStringWrapper
 
@@ -151,15 +164,21 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
 
+    my $size  = $self->maxKringSize($k);
+    my @array = (-1) x $size;
+    $self->kRing($index, $k, \@array);
+
 ## kRingWrapper
 
-Returns an array reference of h3 indices with the k distance of the origin index.
+Returns an array reference of H3 indices with the k distance of the origin index.
 
     my $aref = $gh3->kRingWrapper($index, $k); #ias ARRAY of H3 Indexes
 
 ## maxKringSize
 
 Maximum number of indices that result from the kRing algorithm with the given k.
+
+    my $size  = $self->maxKringSize($k);
 
 ## kRingDistances
 
@@ -169,9 +188,17 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
 
+    my $size  = $self->maxKringSize($k);
+    my @array = (-1) x $size;
+    my @dist  = (-1) x $size;
+    my %hash  = ();
+    $self->kRingDistances($index, $k, \@array, \@dist);
+
 ## kRingDistancesWrapper
 
 Returns a hash reference where the keys are the H3 index and values are the k distance for the given index and k value.
+
+    my $href = $gh3->kRingDistancesWrapper($index, $k); #isa HASH
 
 ## hexRange
 
@@ -217,6 +244,10 @@ Notes:
 
     - Lines are drawn in grid space, and may not correspond exactly to either Cartesian lines or great arcs.
 
+## h3LineWrapper
+
+    my $aref = $gh3->h3LineWrapper($start, $end);
+
 ## h3LineSize
 
 Number of indexes in a line from the start index to the end index, to be used for allocating memory. Returns a negative number if the line cannot be computed.
@@ -251,7 +282,17 @@ Returns the parent (coarser) index containing h.
 
 Populates children with the indexes contained by h at resolution childRes. children must be an array of at least size maxH3ToChildrenSize(h, childRes).
 
+    my $size  = $self->maxH3ToChildrenSize($index, $res);
+    my @array = (-1) x $size;
+    $self->h3ToChildren($index, $res, \@array);
+
+## h3ToChildrenWrapper
+
+    my $aref = $gh3->h3ToChildrenWrapper($index, $resoultion);
+
 ## maxH3ToChildrenSize
+
+    my $size  = $self->maxH3ToChildrenSize($index, $res);
 
 ## h3ToCenterChild
 
