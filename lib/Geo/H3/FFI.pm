@@ -122,8 +122,10 @@ sub geoToH3Wrapper {
 
 Finds the centroid of the index.
 
-  my $geo = $gh3->geo; #isa Geo::H3::FFI::Struct::GeoCoord
+  my $geo = $gh3->geo;          #isa Geo::H3::FFI::Struct::GeoCoord
   $gh3->h3ToGeo($index, $geo);
+  my $lat = $geo->lat;          #isa Float in radians
+  my $lon = $geo->lon;          #isa Float in radians
 
 =cut
 
@@ -133,6 +135,8 @@ $ffi->attach(h3ToGeo => ['uint64_t', 'geo_coord_t'] => 'void' => \&_oowrapper);
 =head2 h3ToGeoWrapper
 
   my $geo = h3ToGeoWrapper($index); #isa Geo::H3::FFI::Struct::GeoCoord
+  my $lat = $geo->lat;          #isa Float in radians
+  my $lon = $geo->lon;          #isa Float in radians
 
 =cut
 
@@ -148,8 +152,10 @@ sub h3ToGeoWrapper {
 
 Finds the boundary of the index.
 
-  my $gb = $gh3->gb;
-  $gh3->h3ToGeoBoundary($index, $gb);
+  my $gb        = $gh3->gb;           #isa empty Geo::H3::FFI::Struct::GeoBoundary
+  $gh3->h3ToGeoBoundary($index, $gb); #populates $gb
+  my $num_verts = $gb->num_verts;     #isa Int
+  my $vert0     = $gb->verts->[0];    #isa Geo::H3::FFI::Struct::GeoCord
 
 =cut
 
@@ -202,6 +208,8 @@ Converts the string representation to H3Index (uint64_t) representation.
 
 Returns 0 on error.
 
+  my $index  = $self->stringToH3($string, length($string));
+
 =cut
 
 #H3Index stringToH3(const char *str);
@@ -223,6 +231,11 @@ sub stringToH3Wrapper {
 =head2 h3ToString
 
 Converts the H3Index representation of the index to the string representation. str must be at least of length 17.
+
+  my $size   = 17; #Must be 17 for API to work
+  my $string = "\000" x $size;
+  $self->h3ToString($index, $string, $size);
+  $string    =~ s/\000+\Z//;
 
 =cut
 
@@ -328,6 +341,10 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
 
+  my $size  = $self->maxKringSize($k);
+  my @array = (-1) x $size;
+  $self->kRing($index, $k, \@array);
+
 =cut
 
 #void kRing(H3Index origin, int k, H3Index* out);
@@ -335,7 +352,7 @@ $ffi->attach(kRing => ['uint64_t', 'int', 'uint64_t_array'] => 'void' => \&_oowr
 
 =head2 kRingWrapper
 
-Returns an array reference of h3 indices with the k distance of the origin index.
+Returns an array reference of H3 indices with the k distance of the origin index.
 
   my $aref = $gh3->kRingWrapper($index, $k); #ias ARRAY of H3 Indexes
 
@@ -355,6 +372,8 @@ sub kRingWrapper {
 
 Maximum number of indices that result from the kRing algorithm with the given k.
 
+  my $size  = $self->maxKringSize($k);
+
 =cut
 
 #int maxKringSize(int k);
@@ -368,6 +387,12 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
 
+  my $size  = $self->maxKringSize($k);
+  my @array = (-1) x $size;
+  my @dist  = (-1) x $size;
+  my %hash  = ();
+  $self->kRingDistances($index, $k, \@array, \@dist);
+
 =cut
 
 #void kRingDistances(H3Index origin, int k, H3Index* out, int* distances);
@@ -376,6 +401,8 @@ $ffi->attach(kRingDistances => ['uint64_t', 'int', 'uint64_t_array', 'int_array'
 =head2 kRingDistancesWrapper
 
 Returns a hash reference where the keys are the H3 index and values are the k distance for the given index and k value.
+
+  my $href = $gh3->kRingDistancesWrapper($index, $k); #isa HASH
 
 =cut
 
@@ -389,7 +416,7 @@ sub kRingDistancesWrapper {
   my %hash  = ();
   $self->kRingDistances($index, $k, \@array, \@dist);
   @hash{@array} = @dist; #hash slice assignment
-  delete $hash{18446744073709551615};
+  delete $hash{'18446744073709551615'};
   return \%hash;
 }
 
@@ -461,6 +488,15 @@ Notes:
 
 #int h3Line(H3Index start, H3Index end, H3Index* out);
 $ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_t_array'] => 'int' => \&_oowrapper);
+
+=head2 h3LineWrapper
+
+=cut
+
+sub h3LineWrapper {
+  my $self = shift;
+  die;
+}
 
 =head2 h3LineSize
 

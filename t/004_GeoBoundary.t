@@ -22,12 +22,12 @@ is($gb->num_verts, 6, '$gb->num_verts');
 
 #diag(Dumper({verts=>$verts}));
 
-foreach my $count (1 .. $gb->num_verts) {
-  my $vert = $gb->verts->[$count - 1]; #$gb->verts sizeof 10
+foreach my $index (0 .. $gb->num_verts - 1) {
+  my $vert = $gb->verts->[$index]; #$gb->verts sizeof 10
   #diag(Dumper({vert=>$vert}));
   isa_ok($vert, 'Geo::H3::FFI::Struct::GeoCoord');
   can_ok($vert, 'lat');
   can_ok($vert, 'lon');
-  diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $count, $vert->lat, $obj->radsToDegs($vert->lat),
+  diag(sprintf("Count: %s, Lat: %s (%s), Lon: %s (%s)", $index, $vert->lat, $obj->radsToDegs($vert->lat),
                                                                 $vert->lon, $obj->radsToDegs($vert->lon)));
 }
