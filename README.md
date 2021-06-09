@@ -153,6 +153,10 @@ Output is placed in the provided array in no particular order. Elements of the o
 
 ## kRingWrapper
 
+Returns an array reference of h3 indices with the k distance of the origin index.
+
+    my $aref = $gh3->kRingWrapper($index, $k); #ias ARRAY of H3 Indexes
+
 ## maxKringSize
 
 Maximum number of indices that result from the kRing algorithm with the given k.
@@ -167,7 +171,7 @@ Output is placed in the provided array in no particular order. Elements of the o
 
 ## kRingDistancesWrapper
 
-Returns a hash reference where the keys are the H3 index and values are the K distance for the given index and K value.
+Returns a hash reference where the keys are the H3 index and values are the k distance for the given index and k value.
 
 ## hexRange
 

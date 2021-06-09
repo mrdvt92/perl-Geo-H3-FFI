@@ -136,6 +136,11 @@ Grid traversal functions
     pentagon.
 
   kRingWrapper
+    Returns an array reference of h3 indices with the k distance of the
+    origin index.
+
+      my $aref = $gh3->kRingWrapper($index, $k); #ias ARRAY of H3 Indexes
+
   maxKringSize
     Maximum number of indices that result from the kRing algorithm with the
     given k.
@@ -152,7 +157,7 @@ Grid traversal functions
 
   kRingDistancesWrapper
     Returns a hash reference where the keys are the H3 index and values are
-    the K distance for the given index and K value.
+    the k distance for the given index and k value.
 
   hexRange
     hexRange produces indexes within k distance of the origin index. Output
