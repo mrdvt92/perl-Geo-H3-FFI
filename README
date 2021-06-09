@@ -84,10 +84,10 @@ Index Inspection Functions
 
     Returns 0 on error.
 
-      my $index  = $self->stringToH3($string, length($string));
+      my $index  = $gh3->stringToH3($string, length($string));
 
   stringToH3Wrapper
-      my $index = stringToH3Wrapper($string);
+      my $index = $gh3->stringToH3Wrapper($string);
 
   h3ToString
     Converts the H3Index representation of the index to the string
@@ -95,27 +95,27 @@ Index Inspection Functions
 
       my $size   = 17; #Must be 17 for API to work
       my $string = "\000" x $size;
-      $self->h3ToString($index, $string, $size);
+      $gh3->h3ToString($index, $string, $size);
       $string    =~ s/\000+\Z//;
 
   h3ToStringWrapper
-      my $string = h3ToStringWrapper($index);
+      my $string = $gh3->h3ToStringWrapper($index);
 
   h3IsValid
     Returns non-zero if this is a valid H3 index.
 
-      my isValid = h3IsValid($index);
+      my isValid = $gh3->h3IsValid($index);
 
   h3IsResClassIII
     Returns non-zero if this index has a resolution with Class III
     orientation.
 
-      my $isRC3 = h3IsResClassIII($index);
+      my $isRC3 = $gh3->h3IsResClassIII($index);
 
   h3IsPentagon
     Returns non-zero if this index represents a pentagonal cell.
 
-      my $isPentagon = h3IsPentagon($index);
+      my $isPentagon = $gh3->h3IsPentagon($index);
 
   h3GetFaces
     Find all icosahedron faces intersected by a given H3 index and places
@@ -134,6 +134,8 @@ Index Inspection Functions
     Returns the maximum number of icosahedron faces the given H3 index may
     intersect.
 
+      my $count = $gh3->maxFaceCount($index);
+
 Grid traversal functions
     Grid traversal allows finding cells in the vicinity of an origin cell,
     and determining how to traverse the grid from one cell to another.
@@ -148,7 +150,7 @@ Grid traversal functions
     of the output array may be left zero, as can happen when crossing a
     pentagon.
 
-      my $size  = $self->maxKringSize($k);
+      my $size  = $gh3->maxKringSize($k);
       my @array = (-1) x $size;
       $self->kRing($index, $k, \@array);
 
@@ -162,7 +164,7 @@ Grid traversal functions
     Maximum number of indices that result from the kRing algorithm with the
     given k.
 
-      my $size  = $self->maxKringSize($k);
+      my $size  = $gh3->maxKringSize($k);
 
   kRingDistances
     k-rings produces indices within k distance of the origin index.
@@ -174,11 +176,11 @@ Grid traversal functions
     of the output array may be left zero, as can happen when crossing a
     pentagon.
 
-      my $size  = $self->maxKringSize($k);
+      my $size  = $gh3->maxKringSize($k);
       my @array = (-1) x $size;
       my @dist  = (-1) x $size;
       my %hash  = ();
-      $self->kRingDistances($index, $k, \@array, \@dist);
+      $gh3->kRingDistances($index, $k, \@array, \@dist);
 
   kRingDistancesWrapper
     Returns a hash reference where the keys are the H3 index and values are
@@ -278,20 +280,22 @@ Hierarchical grid functions
   h3ToParent
     Returns the parent (coarser) index containing h.
 
+      my $parent = $gh3->h3ToParent($index, $resolution);
+
   h3ToChildren
     Populates children with the indexes contained by h at resolution
     childRes. children must be an array of at least size
     maxH3ToChildrenSize(h, childRes).
 
-      my $size  = $self->maxH3ToChildrenSize($index, $res);
+      my $size  = $gh3->maxH3ToChildrenSize($index, $res);
       my @array = (-1) x $size;
-      $self->h3ToChildren($index, $res, \@array);
+      $gh3->h3ToChildren($index, $res, \@array);
 
   h3ToChildrenWrapper
       my $aref = $gh3->h3ToChildrenWrapper($index, $resoultion);
 
   maxH3ToChildrenSize
-      my $size  = $self->maxH3ToChildrenSize($index, $res);
+      my $size  = $gh3->maxH3ToChildrenSize($index, $res);
 
   h3ToCenterChild
     Returns the center child (finer) index contained by h at resolution
@@ -303,6 +307,9 @@ Hierarchical grid functions
     the set cannot be compacted.
 
     Returns 0 on success.
+
+  compactWrapper
+      my $aref = $gh3->compactWrapper(\@indexes);
 
   uncompact
     Uncompacts the set compactedSet of indexes to the resolution res. h3Set

@@ -98,11 +98,11 @@ Converts the string representation to H3Index (uint64\_t) representation.
 
 Returns 0 on error.
 
-    my $index  = $self->stringToH3($string, length($string));
+    my $index  = $gh3->stringToH3($string, length($string));
 
 ## stringToH3Wrapper
 
-    my $index = stringToH3Wrapper($string);
+    my $index = $gh3->stringToH3Wrapper($string);
 
 ## h3ToString
 
@@ -110,30 +110,30 @@ Converts the H3Index representation of the index to the string representation. s
 
     my $size   = 17; #Must be 17 for API to work
     my $string = "\000" x $size;
-    $self->h3ToString($index, $string, $size);
+    $gh3->h3ToString($index, $string, $size);
     $string    =~ s/\000+\Z//;
 
 ## h3ToStringWrapper
 
-    my $string = h3ToStringWrapper($index);
+    my $string = $gh3->h3ToStringWrapper($index);
 
 ## h3IsValid
 
 Returns non-zero if this is a valid H3 index.
 
-    my isValid = h3IsValid($index);
+    my isValid = $gh3->h3IsValid($index);
 
 ## h3IsResClassIII
 
 Returns non-zero if this index has a resolution with Class III orientation.
 
-    my $isRC3 = h3IsResClassIII($index);
+    my $isRC3 = $gh3->h3IsResClassIII($index);
 
 ## h3IsPentagon
 
 Returns non-zero if this index represents a pentagonal cell.
 
-    my $isPentagon = h3IsPentagon($index);
+    my $isPentagon = $gh3->h3IsPentagon($index);
 
 ## h3GetFaces
 
@@ -152,6 +152,8 @@ Faces are represented as integers from 0-19, inclusive. The array is sparse, and
 
 Returns the maximum number of icosahedron faces the given H3 index may intersect.
 
+    my $count = $gh3->maxFaceCount($index);
+
 # Grid traversal functions
 
 Grid traversal allows finding cells in the vicinity of an origin cell, and determining how to traverse the grid from one cell to another.
@@ -164,7 +166,7 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
 
-    my $size  = $self->maxKringSize($k);
+    my $size  = $gh3->maxKringSize($k);
     my @array = (-1) x $size;
     $self->kRing($index, $k, \@array);
 
@@ -178,7 +180,7 @@ Returns an array reference of H3 indices with the k distance of the origin index
 
 Maximum number of indices that result from the kRing algorithm with the given k.
 
-    my $size  = $self->maxKringSize($k);
+    my $size  = $gh3->maxKringSize($k);
 
 ## kRingDistances
 
@@ -188,11 +190,11 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 
 Output is placed in the provided array in no particular order. Elements of the output array may be left zero, as can happen when crossing a pentagon.
 
-    my $size  = $self->maxKringSize($k);
+    my $size  = $gh3->maxKringSize($k);
     my @array = (-1) x $size;
     my @dist  = (-1) x $size;
     my %hash  = ();
-    $self->kRingDistances($index, $k, \@array, \@dist);
+    $gh3->kRingDistances($index, $k, \@array, \@dist);
 
 ## kRingDistancesWrapper
 
@@ -278,13 +280,15 @@ These functions permit moving between resolutions in the H3 grid system. The fun
 
 Returns the parent (coarser) index containing h.
 
+    my $parent = $gh3->h3ToParent($index, $resolution);
+
 ## h3ToChildren
 
 Populates children with the indexes contained by h at resolution childRes. children must be an array of at least size maxH3ToChildrenSize(h, childRes).
 
-    my $size  = $self->maxH3ToChildrenSize($index, $res);
+    my $size  = $gh3->maxH3ToChildrenSize($index, $res);
     my @array = (-1) x $size;
-    $self->h3ToChildren($index, $res, \@array);
+    $gh3->h3ToChildren($index, $res, \@array);
 
 ## h3ToChildrenWrapper
 
@@ -292,7 +296,7 @@ Populates children with the indexes contained by h at resolution childRes. child
 
 ## maxH3ToChildrenSize
 
-    my $size  = $self->maxH3ToChildrenSize($index, $res);
+    my $size  = $gh3->maxH3ToChildrenSize($index, $res);
 
 ## h3ToCenterChild
 
@@ -303,6 +307,10 @@ Returns the center child (finer) index contained by h at resolution childRes.
 Compacts the set h3Set of indexes as best as possible, into the array compactedSet. compactedSet must be at least the size of h3Set in case the set cannot be compacted.
 
 Returns 0 on success.
+
+## compactWrapper
+
+    my $aref = $gh3->compactWrapper(\@indexes);
 
 ## uncompact
 
