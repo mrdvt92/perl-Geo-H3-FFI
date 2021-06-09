@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
-use Test::More tests => 10;
+use Test::More tests => 13;
 require_ok 'Geo::H3::FFI';
 
 my $obj = Geo::H3::FFI->new;
@@ -38,5 +38,12 @@ my $h3ToCenterChild = $obj->h3ToCenterChild($index, $resolution+1);
 is($h3ToCenterChild, $child, 'h3ToCenterChild'); #8b2a1072b59bfff
 
 #compact
+
+my $compact = $obj->compactWrapper($children);
+isa_ok($compact, 'ARRAY', 'compact');
+is(scalar(@$compact), 1, 'compact');
+is($compact->[0], $index, 'compact');
+diag Dumper $compact;
+
 #uncompact
 #maxUncompactSize

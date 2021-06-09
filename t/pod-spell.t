@@ -114,3 +114,4 @@ kRingWrapper
 kRingDistancesWrapper
 h3LineWrapper
 h3ToChildrenWrapper
+compactWrapper
