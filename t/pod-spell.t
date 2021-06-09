@@ -112,3 +112,4 @@ GeoBoundary
 h3GetFacesWrapper
 kRingWrapper
 kRingDistancesWrapper
+h3

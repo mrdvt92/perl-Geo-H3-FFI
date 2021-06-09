@@ -12,11 +12,8 @@ my $lib = FFI::CheckLib::find_lib_or_die(lib => 'h3');
 my $ffi = FFI::Platypus->new(api => 1, lib => $lib);
 FFI::C->ffi($ffi); #Beware: Class setting
 
-$ffi->type('int [5]'        => 'int_aref_5');
-$ffi->type('uint64_t [919]' => 'uint64_aref_919');
-$ffi->type('int [919]'      => 'int_aref_919');
-#$ffi->type('char *' => 'char_p');
-#$ffi->load_custom_type('::StringPointer' => 'string_p');
+$ffi->type('uint64_t[]' => 'uint64_t_array');
+$ffi->type('int[]'      => 'int_array');
 package Geo::H3::FFI::Struct::H3Index     {FFI::C->struct(h3_index_t        => [index       => 'uint64_t'                            ])};
 package Geo::H3::FFI::Array::H3Index      {FFI::C->array (array_h3_index_t  => [h3_index_t  => 255                                   ])};
 package Geo::H3::FFI::Struct::GeoCoord    {FFI::C->struct(geo_coord_t       => [lat         => 'double', lon   => 'double'           ])};
@@ -293,7 +290,7 @@ Faces are represented as integers from 0-19, inclusive. The array is sparse, and
 =cut
 
 #void h3GetFaces(H3Index h, int* out);
-$ffi->attach(h3GetFaces => ['uint64_t', 'int_aref_5'] => 'void' => \&_oowrapper);
+$ffi->attach(h3GetFaces => ['uint64_t', 'int_array'] => 'void' => \&_oowrapper);
 
 =head2 h3GetFacesWrapper
 
@@ -304,7 +301,8 @@ $ffi->attach(h3GetFaces => ['uint64_t', 'int_aref_5'] => 'void' => \&_oowrapper)
 sub h3GetFacesWrapper {
   my $self  = shift;
   my $index = shift;
-  my @array = (-1) x 5;
+  my $size  = $self->maxFaceCount($index);
+  my @array = (-1) x $size;
   $self->h3GetFaces($index, \@array);
   return [grep {$_ > -1} @array];
 }
@@ -333,9 +331,13 @@ Output is placed in the provided array in no particular order. Elements of the o
 =cut
 
 #void kRing(H3Index origin, int k, H3Index* out);
-$ffi->attach(kRing => ['uint64_t', 'int', 'uint64_aref_919'] => 'void' => \&_oowrapper);
+$ffi->attach(kRing => ['uint64_t', 'int', 'uint64_t_array'] => 'void' => \&_oowrapper);
 
 =head2 kRingWrapper
+
+Returns an array reference of h3 indices with the k distance of the origin index.
+
+  my $aref = $gh3->kRingWrapper($index, $k); #ias ARRAY of H3 Indexes
 
 =cut
 
@@ -343,7 +345,8 @@ sub kRingWrapper {
   my $self  = shift;
   my $index = shift;
   my $k     = shift;
-  my @array = (-1) x 919; #init uint64_aref_919
+  my $size  = $self->maxKringSize($k);
+  my @array = (-1) x $size;
   $self->kRing($index, $k, \@array);
   return [grep {$_ > 0 && $_ < 18446744073709551615} @array];
 }
@@ -368,11 +371,11 @@ Output is placed in the provided array in no particular order. Elements of the o
 =cut
 
 #void kRingDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(kRingDistances => ['uint64_t', 'int', 'uint64_aref_919', 'int_aref_919'] => 'void' => \&_oowrapper);
+$ffi->attach(kRingDistances => ['uint64_t', 'int', 'uint64_t_array', 'int_array'] => 'void' => \&_oowrapper);
 
 =head2 kRingDistancesWrapper
 
-Returns a hash reference where the keys are the H3 index and values are the K distance for the given index and K value.
+Returns a hash reference where the keys are the H3 index and values are the k distance for the given index and k value.
 
 =cut
 
@@ -380,8 +383,9 @@ sub kRingDistancesWrapper {
   my $self  = shift;
   my $index = shift;
   my $k     = shift;
-  my @array = (-1) x 919; #init uint64_aref_919
-  my @dist  = (-1) x 919; #init int_aref_919
+  my $size  = $self->maxKringSize($k);
+  my @array = (-1) x $size;
+  my @dist  = (-1) x $size;
   my %hash  = ();
   $self->kRingDistances($index, $k, \@array, \@dist);
   @hash{@array} = @dist; #hash slice assignment
@@ -402,7 +406,7 @@ Returns 0 if no pentagonal distortion is encountered.
 =cut
 
 #int hexRange(H3Index origin, int k, H3Index* out);
-$ffi->attach(hexRange => ['uint64_t', 'int', 'uint64_aref_919'] => 'int' => \&_oowrapper);
+$ffi->attach(hexRange => ['uint64_t', 'int', 'uint64_t_array'] => 'int' => \&_oowrapper);
 
 =head2 hexRangeDistances
 
@@ -417,7 +421,7 @@ Returns 0 if no pentagonal distortion is encountered.
 =cut
 
 #int hexRangeDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'uint64_aref_919', 'int*'] => 'int' => \&_oowrapper);
+$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'uint64_t_array', 'int*'] => 'int' => \&_oowrapper);
 
 =head2 hexRanges
 
@@ -428,7 +432,7 @@ Returns 0 if no pentagonal distortion was encountered. Otherwise, output is unde
 =cut
 
 #int hexRanges(H3Index* h3Set, int length, int k, H3Index* out);
-$ffi->attach(hexRanges => ['uint64_aref_919', 'int', 'int', 'uint64_aref_919'] => 'int' => \&_oowrapper);
+$ffi->attach(hexRanges => ['uint64_t_array', 'int', 'int', 'uint64_t_array'] => 'int' => \&_oowrapper);
 
 =head2 hexRing
 
@@ -439,7 +443,7 @@ Returns 0 if no pentagonal distortion was encountered.
 =cut
 
 #int hexRing(H3Index origin, int k, H3Index* out);
-$ffi->attach(hexRing => ['uint64_t', 'int', 'uint64_aref_919'] => 'int' => \&_oowrapper);
+$ffi->attach(hexRing => ['uint64_t', 'int', 'uint64_t_array'] => 'int' => \&_oowrapper);
 
 =head2 h3Line
 
@@ -456,7 +460,7 @@ Notes:
 =cut
 
 #int h3Line(H3Index start, H3Index end, H3Index* out);
-$ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_aref_919'] => 'int' => \&_oowrapper);
+$ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_t_array'] => 'int' => \&_oowrapper);
 
 =head2 h3LineSize
 
