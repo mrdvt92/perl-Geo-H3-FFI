@@ -113,3 +113,4 @@ h3GetFacesWrapper
 kRingWrapper
 kRingDistancesWrapper
 h3LineWrapper
+h3ToChildrenWrapper

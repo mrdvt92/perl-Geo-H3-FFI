@@ -563,12 +563,34 @@ $ffi->attach(h3ToParent => ['uint64_t', 'int'] => 'uint64_t' => \&_oowrapper);
 
 Populates children with the indexes contained by h at resolution childRes. children must be an array of at least size maxH3ToChildrenSize(h, childRes).
 
+  my $size  = $self->maxH3ToChildrenSize($index, $res);
+  my @array = (-1) x $size;
+  $self->h3ToChildren($index, $res, \@array);
+
 =cut
 
 #void h3ToChildren(H3Index h, int childRes, H3Index *children);
-$ffi->attach(h3ToChildren => ['uint64_t', 'int', 'uint64_t*'] => 'void' => \&_oowrapper);
+$ffi->attach(h3ToChildren => ['uint64_t', 'int', 'uint64_t_array'] => 'void' => \&_oowrapper);
+
+=head2 h3ToChildrenWrapper
+
+  my $aref = $gh3->h3ToChildrenWrapper($index, $resoultion);
+
+=cut
+
+sub h3ToChildrenWrapper {
+  my $self  = shift;
+  my $index = shift;
+  my $res   = shift;
+  my $size  = $self->maxH3ToChildrenSize($index, $res);
+  my @array = (-1) x $size;
+  $self->h3ToChildren($index, $res, \@array);
+  return \@array;
+}
 
 =head2 maxH3ToChildrenSize
+
+  my $size  = $self->maxH3ToChildrenSize($index, $res);
 
 =cut
 

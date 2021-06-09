@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
 use Test::Number::Delta;
-use Test::More tests => 18;
+use Test::More tests => 23;
 require_ok 'Geo::H3::FFI';
 
 my $obj = Geo::H3::FFI->new;
@@ -69,8 +69,17 @@ my $start = 0x8a2a1072b59ffff;
 my $end   = 0x8a2a1072801ffff;
 my $aref  = $obj->h3LineWrapper($start, $end);
 diag map {sprintf "%s => %s\n", $_ => $obj->h3ToStringWrapper($_)} @$aref;
+is($aref->[0], $start, 'h3LineWrapper');
+is($aref->[-1], $end, 'h3LineWrapper');
+is(scalar(@$aref), 23, 'h3LineWrapper');
 
 #h3LineSize
+my $size = $obj->h3LineSize($start, $end);
+is($size, 23, 'h3LineSize');
+
 #h3Distance
+my $dist = $obj->h3Distance($start, $end);
+is($dist, 22, 'h3Distance');
+
 #experimentalH3ToLocalIj
 #experimentalLocalIjToH3
