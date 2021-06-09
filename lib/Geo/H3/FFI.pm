@@ -491,11 +491,18 @@ $ffi->attach(h3Line => ['uint64_t', 'uint64_t', 'uint64_t_array'] => 'int' => \&
 
 =head2 h3LineWrapper
 
+  my $aref = $gh3->h3LineWrapper($start, $end);
+
 =cut
 
 sub h3LineWrapper {
-  my $self = shift;
-  die;
+  my $self  = shift;
+  my $start = shift;
+  my $end   = shift;
+  my $size  = $self->h3LineSize($start, $end);
+  my @array = (-1) x $size;
+  my $int   = $self->h3Line($start, $end, \@array); #what is int???
+  return \@array;
 }
 
 =head2 h3LineSize

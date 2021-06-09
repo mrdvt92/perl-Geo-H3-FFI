@@ -65,6 +65,11 @@ is($obj->maxKringSize(17), 919, 'maxKringSize');
 #hexRanges
 #hexRing
 #h3Line
+my $start = 0x8a2a1072b59ffff;
+my $end   = 0x8a2a1072801ffff;
+my $aref  = $obj->h3LineWrapper($start, $end);
+diag map {sprintf "%s => %s\n", $_ => $obj->h3ToStringWrapper($_)} @$aref;
+
 #h3LineSize
 #h3Distance
 #experimentalH3ToLocalIj
