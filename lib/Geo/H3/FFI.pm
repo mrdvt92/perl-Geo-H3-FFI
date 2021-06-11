@@ -433,10 +433,36 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
+  my $return = $gh3->hexRange($index, $k, \@out);
+
 =cut
 
 #int hexRange(H3Index origin, int k, H3Index* out);
 $ffi->attach(hexRange => ['uint64_t', 'int', 'uint64_t_array'] => 'int' => \&_oowrapper);
+
+=head2 hexRangeWrapper
+
+  my @indexes = $gh3->hexRangeWrapper($index, $k);
+
+=cut
+
+sub hexRangeWrapper {
+  my $self   = shift;
+  my $index  = shift;
+  my $k      = shift;
+  my $size   = $self->maxHexRangeSize($k);
+  my @array  = (-1) x $size;
+  my $return = $self->hexRange($index, $k, \@array); #What is $return
+  return \@array;
+}
+
+=head2 maxHexRangeSize
+
+  my $size = $gh3->maxHexRangeSize($k);
+
+=cut
+
+sub maxHexRangeSize {shift->maxKringSize(@_)};
 
 =head2 hexRangeDistances
 
@@ -448,10 +474,26 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
+  my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
+
 =cut
 
 #int hexRangeDistances(H3Index origin, int k, H3Index* out, int* distances);
-$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'uint64_t_array', 'int*'] => 'int' => \&_oowrapper);
+$ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'uint64_t_array', 'int_array'] => 'int' => \&_oowrapper);
+
+sub hexRangeDistancesWrapper {
+  my $self  = shift;
+  my $index = shift;
+  my $k     = shift;
+  my $size  = $self->maxHexRangeSize($k);
+  my @array = (-1) x $size;
+  my @dist  = (-1) x $size;
+  my %hash  = ();
+  $self->hexRangeDistances($index, $k, \@array, \@dist);
+  @hash{@array} = @dist; #hash slice assignment
+  delete $hash{'18446744073709551615'};
+  return \%hash;
+}
 
 =head2 hexRanges
 
@@ -470,10 +512,41 @@ Produces the hollow hexagonal ring centered at origin with sides of length k.
 
 Returns 0 if no pentagonal distortion was encountered.
 
+  my $distortion = $gh3->hexRing($index, $k, \@ring);
+
 =cut
 
 #int hexRing(H3Index origin, int k, H3Index* out);
 $ffi->attach(hexRing => ['uint64_t', 'int', 'uint64_t_array'] => 'int' => \&_oowrapper);
+
+=head2 hexRingWrapper
+
+  my $aref = $gh3->hexRingWrapper($index, $k);
+
+=cut
+
+sub hexRingWrapper {
+  my $self       = shift;
+  my $index      = shift;
+  my $k          = shift;
+  my $size       = $self->maxHexRingSize($k);
+  my @array      = (-1) x $size;
+  my $distortion = $self->hexRing($index, $k, \@array); #What is $return
+  warn("Error: Package: $PACKAGE, Method: hexRingWrapper, Distrortion: $distortion") if $distortion;
+  return \@array;
+}
+
+=head2 maxHexRingSize
+
+  my $size = $gh3->maxHexRingSize($k);
+
+=cut
+
+sub maxHexRingSize {
+  my $self = shift;
+  my $k    = shift;
+  return $k == 0 ? 1 : $k * 6; #See: https://www.rubydoc.info/gems/h3/3.2.0/H3%2FTraversal:max_hex_ring_size
+}
 
 =head2 h3Line
 

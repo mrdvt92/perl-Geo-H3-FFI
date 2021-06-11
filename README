@@ -201,6 +201,14 @@ Grid traversal functions
 
     Returns 0 if no pentagonal distortion is encountered.
 
+      my $return = $gh3->hexRange($index, $k, \@out);
+
+  hexRangeWrapper
+      my @indexes = $gh3->hexRangeWrapper($index, $k);
+
+  maxHexRangeSize
+      my $size = $gh3->maxHexRangeSize($k);
+
   hexRangeDistances
     hexRange produces indexes within k distance of the origin index. Output
     behavior is undefined when one of the indexes returned by this function
@@ -214,6 +222,8 @@ Grid traversal functions
     array at the same offset.
 
     Returns 0 if no pentagonal distortion is encountered.
+
+      my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
 
   hexRanges
     hexRanges takes an array of input hex IDs and a max k-ring and returns
@@ -229,6 +239,14 @@ Grid traversal functions
     length k.
 
     Returns 0 if no pentagonal distortion was encountered.
+
+      my $distortion = $gh3->hexRing($index, $k, \@ring);
+
+  hexRingWrapper
+      my $aref = $gh3->hexRingWrapper($index, $k);
+
+  maxHexRingSize
+      my $size = $gh3->maxHexRingSize($k);
 
   h3Line
     Given two H3 indexes, return the line of indexes between them

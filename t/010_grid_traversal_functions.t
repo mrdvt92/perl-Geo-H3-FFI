@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
 use Test::Number::Delta;
-use Test::More tests => 23;
+use Test::More tests => 43;
 require_ok 'Geo::H3::FFI';
 
 my $obj = Geo::H3::FFI->new;
@@ -32,7 +32,6 @@ is(sprintf("%x", $index ), '8a2a1072b59ffff', 'index' );
   isa_ok($aref, 'ARRAY');
   is(scalar(@$aref), $size, 'size');
   is($obj->maxKringSize($k), $size, 'maxKringSize');
-  is((grep {$_ ==  $index} @$aref)[0], $index, 'index in kRing');
 }
 
 {
@@ -61,9 +60,71 @@ is($obj->maxKringSize(17), 919, 'maxKringSize');
 }
 
 #hexRange
+{
+  #local $TODO = 'not sure why this does not work';
+  my $k       = 1;
+  my $indexes = $obj->hexRangeWrapper($index, $k);
+  isa_ok($indexes, 'ARRAY');
+  diag Dumper $indexes;
+}
+
+{
+  my $k    = 0;
+  my $size = 1;
+  my $aref = $obj->hexRangeWrapper($index, $k);
+  isa_ok($aref, 'ARRAY');
+  is(scalar(@$aref), $size, 'size');
+  is($obj->maxKringSize($k), $size, 'maxKringSize');
+  is($aref->[0], $index, 'index in hexRange'); #by defintion K=0 is the index itself
+}
+
+{
+  my $k    = 1;
+  my $size = 7;
+  my $aref = $obj->hexRangeWrapper($index, $k);
+  isa_ok($aref, 'ARRAY');
+  is(scalar(@$aref), $size, 'size');
+  is($obj->maxKringSize($k), $size, 'maxKringSize');
+  is((grep {$_ ==  $index} @$aref)[0], $index, 'index in hexRange');
+}
+
+{
+  my $k    = 2;
+  my $size = 19;
+  my $aref = $obj->hexRangeWrapper($index, $k);
+  isa_ok($aref, 'ARRAY');
+  is(scalar(@$aref), $size, 'size');
+  is($obj->maxHexRangeSize($k), $size, 'maxKringSize');
+  is((grep {$_ ==  $index} @$aref)[0], $index, 'index in hexRange');
+}
+
 #hexRangeDistances
+{
+  my $k    = 2;
+  my $size = 19;
+  my $href = $obj->hexRangeDistancesWrapper($index, $k);
+  isa_ok($href, 'HASH');
+  is(scalar(keys %$href), 19, 'size');
+  diag Dumper $href;
+}
+
 #hexRanges
 #hexRing
+
+is($obj->maxHexRingSize(0),  1, 'maxHexRingSize');
+is($obj->maxHexRingSize(1),  6, 'maxHexRingSize');
+is($obj->maxHexRingSize(3), 18, 'maxHexRingSize');
+
+{
+  my $k    = 1;
+  my $size = 6;
+  my $aref = $obj->hexRingWrapper($index, $k);
+  isa_ok($aref, 'ARRAY');
+  is(scalar(@$aref), $size, 'size');
+  is($obj->maxHexRingSize($k), $size, 'maxKringSize');
+}
+
+
 #h3Line
 my $start = 0x8a2a1072b59ffff;
 my $end   = 0x8a2a1072801ffff;

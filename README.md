@@ -212,6 +212,16 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
+    my $return = $gh3->hexRange($index, $k, \@out);
+
+## hexRangeWrapper
+
+    my @indexes = $gh3->hexRangeWrapper($index, $k);
+
+## maxHexRangeSize
+
+    my $size = $gh3->maxHexRangeSize($k);
+
 ## hexRangeDistances
 
 hexRange produces indexes within k distance of the origin index. Output behavior is undefined when one of the indexes returned by this function is a pentagon or is in the pentagon distortion area.
@@ -221,6 +231,8 @@ k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and all
 Output is placed in the provided array in order of increasing distance from the origin. The distances in hexagons is placed in the distances array at the same offset.
 
 Returns 0 if no pentagonal distortion is encountered.
+
+    my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
 
 ## hexRanges
 
@@ -233,6 +245,16 @@ Returns 0 if no pentagonal distortion was encountered. Otherwise, output is unde
 Produces the hollow hexagonal ring centered at origin with sides of length k.
 
 Returns 0 if no pentagonal distortion was encountered.
+
+    my $distortion = $gh3->hexRing($index, $k, \@ring);
+
+## hexRingWrapper
+
+    my $aref = $gh3->hexRingWrapper($index, $k);
+
+## maxHexRingSize
+
+    my $size = $gh3->maxHexRingSize($k);
 
 ## h3Line
 
