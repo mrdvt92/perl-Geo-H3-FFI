@@ -115,3 +115,8 @@ kRingDistancesWrapper
 h3LineWrapper
 h3ToChildrenWrapper
 compactWrapper
+hexRangeWrapper
+hexRingWrapper
+maxHexRangeSize
+maxHexRingSize
+hexRangeDistancesWrapper

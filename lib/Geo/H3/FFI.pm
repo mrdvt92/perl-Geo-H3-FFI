@@ -7,7 +7,7 @@ use FFI::Platypus qw{};
 use FFI::C qw{};
 
 our $PACKAGE = __PACKAGE__;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my $lib = FFI::CheckLib::find_lib_or_die(lib => 'h3');
 my $ffi = FFI::Platypus->new(api => 1, lib => $lib);
@@ -480,6 +480,12 @@ Returns 0 if no pentagonal distortion is encountered.
 
 #int hexRangeDistances(H3Index origin, int k, H3Index* out, int* distances);
 $ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'uint64_t_array', 'int_array'] => 'int' => \&_oowrapper);
+
+=head2 hexRangeDistancesWrapper
+
+ my $href = $gh3->hexRangeDistancesWrapper($index, $k); 
+
+=cut
 
 sub hexRangeDistancesWrapper {
   my $self  = shift;
