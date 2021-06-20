@@ -234,6 +234,10 @@ Returns 0 if no pentagonal distortion is encountered.
 
     my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
 
+## hexRangeDistancesWrapper
+
+    my $href = $gh3->hexRangeDistancesWrapper($index, $k); 
+
 ## hexRanges
 
 hexRanges takes an array of input hex IDs and a max k-ring and returns an array of hexagon IDs sorted first by the original hex IDs and then by the k-ring (0 to max), with no guaranteed sorting within each k-ring group.
