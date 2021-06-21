@@ -1,5 +1,8 @@
 Revision history for Perl extension Geo::H3::FFI.
 
+0.04 2021-06-20
+  - Updated Makefile.PL to support CPAN testers
+
 0.03 2021-06-19
   - Updated tests to skip unless libh3 is installed
 

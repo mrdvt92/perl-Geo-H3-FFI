@@ -1,5 +1,5 @@
 Name:           perl-Geo-H3-FFI
-Version:        0.03
+Version:        0.04
 Release:        1%{?dist}
 Summary:        Perl FFI binding to H3 library functions
 License:        MIT
@@ -13,6 +13,8 @@ BuildRequires:  perl(FFI::C)
 BuildRequires:  perl(FFI::CheckLib)
 BuildRequires:  perl(FFI::Platypus)
 BuildRequires:  perl(Package::New)
+BuildRequires:  perl(Test::More)
+BuildRequires:  perl(Test::Number::Delta)
 BuildRequires:  h3
 Requires:       perl(FFI::C)
 Requires:       perl(FFI::CheckLib)

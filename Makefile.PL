@@ -2,6 +2,10 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME           => 'Geo::H3::FFI',
     VERSION_FROM   => 'lib/Geo/H3/FFI.pm',
+    BUILD_REQUIRES => {
+                       'Test::More'          => 0,
+                       'Test::Number::Delta' => 0,
+                      },
     PREREQ_PM      => {
                        'Package::New'  => 0, 
                        'FFI::CheckLib' => 0, 
