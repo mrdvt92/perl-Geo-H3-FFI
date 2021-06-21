@@ -2,7 +2,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME             => 'Geo::H3::FFI',
     VERSION_FROM     => 'lib/Geo/H3/FFI.pm',
-    MIN_PERL_VERSION => 5.8,
+    MIN_PERL_VERSION => '5.008',
     BUILD_REQUIRES   => {
                          'Test::More'          => 0,
                          'Test::Number::Delta' => 0,
