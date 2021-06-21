@@ -1,12 +1,12 @@
 use strict;
 use warnings;
 use Data::Dumper qw{Dumper};
-use Test::More tests => 13;
+use Test::More tests => 22;
 use FFI::CheckLib qw{find_lib};
 my $lib = find_lib(lib=>'h3');
 
 SKIP: {
-  skip 'libh3 not available', 13 unless $lib;
+  skip 'libh3 not available', 22 unless $lib;
 
   require_ok 'Geo::H3::FFI';
 
@@ -47,10 +47,21 @@ SKIP: {
 
   my $compact = $obj->compactWrapper($children);
   isa_ok($compact, 'ARRAY', 'compact');
-  is(scalar(@$compact), 1, 'compact');
-  is($compact->[0], $index, 'compact');
-  diag Dumper $compact;
+  is(scalar(@$compact), 1, 'compact size');
+  is($compact->[0], $index, 'compact children is parent');
 
   #uncompact
   #maxUncompactSize
+
+  my $uncompact = $obj->uncompactWrapper([$index], $resolution+1); #should be same list as $children
+  isa_ok($uncompact, 'ARRAY', 'uncompact');
+  is(scalar(@$uncompact), 7, 'uncompact size');
+  my %exists = map {$_ => 1} @$children;
+  ok($exists{$uncompact->[0]}, 'uncompact are children');
+  ok($exists{$uncompact->[1]}, 'uncompact are children');
+  ok($exists{$uncompact->[2]}, 'uncompact are children');
+  ok($exists{$uncompact->[3]}, 'uncompact are children');
+  ok($exists{$uncompact->[4]}, 'uncompact are children');
+  ok($exists{$uncompact->[5]}, 'uncompact are children');
+  ok($exists{$uncompact->[6]}, 'uncompact are children');
 }
