@@ -1,5 +1,5 @@
 Name:           perl-Geo-H3-FFI
-Version:        0.05
+Version:        0.06
 Release:        1%{?dist}
 Summary:        Perl FFI binding to H3 library functions
 License:        MIT

@@ -7,7 +7,7 @@ use FFI::Platypus qw{};
 use FFI::C qw{};
 
 our $PACKAGE = __PACKAGE__;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 my $lib = FFI::CheckLib::find_lib_or_die(lib => 'h3');
 my $ffi = FFI::Platypus->new(api => 1, lib => $lib);
@@ -15,14 +15,9 @@ FFI::C->ffi($ffi); #Beware: Class setting
 
 $ffi->type('uint64_t[]' => 'uint64_t_array');
 $ffi->type('int[]'      => 'int_array');
-package Geo::H3::FFI::Struct::H3Index     {FFI::C->struct(h3_index_t        => [index       => 'uint64_t'                            ])};
-package Geo::H3::FFI::Array::H3Index      {FFI::C->array (array_h3_index_t  => [h3_index_t  => 255                                   ])};
 package Geo::H3::FFI::Struct::GeoCoord    {FFI::C->struct(geo_coord_t       => [lat         => 'double', lon   => 'double'           ])};
 package Geo::H3::FFI::Array::GeoCoord     {FFI::C->array (array_geo_coord_t => [geo_coord_t => 10                                    ])};
 package Geo::H3::FFI::Struct::GeoBoundary {FFI::C->struct(geo_boundary_t    => [num_verts   => 'int'   , verts => 'array_geo_coord_t'])};
-#package Geo::H3::FFI::Array::Int         {FFI::C->array (array_int_t       => [int         => 19                                    ])};
-#package Geo::H3::FFI::Struct::ArrayIntStruct {FFI::C->struct(array_int_struct_t=> ['array'     => 'array_int_t'                         ])};
-
 
 sub _oowrapper {
   my $xs   = shift;
