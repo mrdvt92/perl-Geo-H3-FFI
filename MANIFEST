@@ -2,6 +2,7 @@ Changes
 Makefile.PL
 MANIFEST
 README
+LICENSE
 t/001_load.t
 t/002_GeoCoord.t
 t/003_h3ToGeo.t
