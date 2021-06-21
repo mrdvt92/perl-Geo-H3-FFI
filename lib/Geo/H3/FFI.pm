@@ -433,7 +433,7 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
-  my $return = $gh3->hexRange($index, $k, \@out);
+  my $distortion = $gh3->hexRange($index, $k, \@out);
 
 =cut
 
@@ -447,12 +447,13 @@ $ffi->attach(hexRange => ['uint64_t', 'int', 'uint64_t_array'] => 'int' => \&_oo
 =cut
 
 sub hexRangeWrapper {
-  my $self   = shift;
-  my $index  = shift;
-  my $k      = shift;
-  my $size   = $self->maxHexRangeSize($k);
-  my @array  = (-1) x $size;
-  my $return = $self->hexRange($index, $k, \@array); #What is $return
+  my $self       = shift;
+  my $index      = shift;
+  my $k          = shift;
+  my $size       = $self->maxHexRangeSize($k);
+  my @array      = (-1) x $size;
+  my $distortion = $self->hexRange($index, $k, \@array); #0 if no pentagonal distortion is encountered
+  warn("Error: Package: $PACKAGE, Method: hexRangeWrapper, Distrortion: $distortion") if $distortion;
   return \@array;
 }
 
@@ -474,7 +475,7 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
-  my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
+  my $distortion = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
 
 =cut
 
@@ -488,15 +489,16 @@ $ffi->attach(hexRangeDistances => ['uint64_t', 'int', 'uint64_t_array', 'int_arr
 =cut
 
 sub hexRangeDistancesWrapper {
-  my $self  = shift;
-  my $index = shift;
-  my $k     = shift;
-  my $size  = $self->maxHexRangeSize($k);
-  my @array = (-1) x $size;
-  my @dist  = (-1) x $size;
-  my %hash  = ();
-  $self->hexRangeDistances($index, $k, \@array, \@dist);
-  @hash{@array} = @dist; #hash slice assignment
+  my $self       = shift;
+  my $index      = shift;
+  my $k          = shift;
+  my $size       = $self->maxHexRangeSize($k);
+  my @array      = (-1) x $size;
+  my @dist       = (-1) x $size;
+  my %hash       = ();
+  my $distortion = $self->hexRangeDistances($index, $k, \@array, \@dist);
+  warn("Error: Package: $PACKAGE, Method: hexRangeDistancesWrapper, Distrortion: $distortion") if $distortion;
+  @hash{@array}  = @dist; #hash slice assignment
   delete $hash{'18446744073709551615'};
   return \%hash;
 }
@@ -537,9 +539,9 @@ sub hexRingWrapper {
   my $k          = shift;
   my $size       = $self->maxHexRingSize($k);
   my @array      = (-1) x $size;
-  my $distortion = $self->hexRing($index, $k, \@array); #What is $return
+  my $distortion = $self->hexRing($index, $k, \@array); #0 if no pentagonal distortion was encountered
   warn("Error: Package: $PACKAGE, Method: hexRingWrapper, Distrortion: $distortion") if $distortion;
-  return \@array;
+  return [grep {$_ > 0 and $_ < 18446744073709551615} @array];
 }
 
 =head2 maxHexRingSize
@@ -726,7 +728,24 @@ Returns 0 on success.
 =cut
 
 #int uncompact(const H3Index *compactedSet, const int numHexes, H3Index *h3Set, const int maxHexes, const int res);
-$ffi->attach(uncompact => ['uint64_t*', 'int', 'uint64_t*', 'int', 'int'] => 'int' => \&_oowrapper);
+$ffi->attach(uncompact => ['uint64_t_array', 'int', 'uint64_t_array', 'int', 'int'] => 'int' => \&_oowrapper);
+
+=head2 uncompactWrapper
+
+  my $aref = $gh3->uncompactWrapper(\@indexes, $resolution);
+
+=cut
+
+sub uncompactWrapper {
+  my $self       = shift;
+  my $in         = shift;
+  my $resolution = shift || 0;
+  my $size       = $self->maxUncompactSize($in, scalar(@$in), $resolution);
+  my $out        = [(-1) x $size];
+  my $error      = $self->uncompact($in, scalar(@$in), $out, scalar(@$out), $resolution);
+  die(qq{Error: Package $PACKAGE method uncompact returned error code "$error"}) if $error;
+  return [grep {$_ > -1} @$out];
+}
 
 =head2 maxUncompactSize
 
@@ -735,7 +754,7 @@ Returns the size of the array needed by uncompact.
 =cut
 
 #int maxUncompactSize(const H3Index *compactedSet, const int numHexes, const int res)
-$ffi->attach(maxUncompactSize => ['uint64_t*', 'int', 'int'] => 'int' => \&_oowrapper);
+$ffi->attach(maxUncompactSize => ['uint64_t_array', 'int', 'int'] => 'int' => \&_oowrapper);
 
 =head1 Region functions
 
