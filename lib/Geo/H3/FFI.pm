@@ -7,7 +7,7 @@ use FFI::Platypus qw{};
 use FFI::C qw{};
 
 our $PACKAGE = __PACKAGE__;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 my $lib = FFI::CheckLib::find_lib_or_die(lib => 'h3');
 my $ffi = FFI::Platypus->new(api => 1, lib => $lib);

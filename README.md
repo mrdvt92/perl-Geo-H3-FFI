@@ -212,7 +212,7 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
-    my $return = $gh3->hexRange($index, $k, \@out);
+    my $distortion = $gh3->hexRange($index, $k, \@out);
 
 ## hexRangeWrapper
 
@@ -232,7 +232,7 @@ Output is placed in the provided array in order of increasing distance from the 
 
 Returns 0 if no pentagonal distortion is encountered.
 
-    my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
+    my $distortion = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
 
 ## hexRangeDistancesWrapper
 
@@ -343,6 +343,10 @@ Returns 0 on success.
 Uncompacts the set compactedSet of indexes to the resolution res. h3Set must be at least of size maxUncompactSize(compactedSet, numHexes, res).
 
 Returns 0 on success.
+
+## uncompactWrapper
+
+    my $aref = $gh3->uncompactWrapper(\@indexes, $resolution);
 
 ## maxUncompactSize
 

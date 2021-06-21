@@ -201,7 +201,7 @@ Grid traversal functions
 
     Returns 0 if no pentagonal distortion is encountered.
 
-      my $return = $gh3->hexRange($index, $k, \@out);
+      my $distortion = $gh3->hexRange($index, $k, \@out);
 
   hexRangeWrapper
       my @indexes = $gh3->hexRangeWrapper($index, $k);
@@ -223,7 +223,7 @@ Grid traversal functions
 
     Returns 0 if no pentagonal distortion is encountered.
 
-      my $return = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
+      my $distortion = $gh3->hexRangeDistances($index, $k, \@indexes, \@distances);
 
   hexRangeDistancesWrapper
      my $href = $gh3->hexRangeDistancesWrapper($index, $k);
@@ -337,6 +337,9 @@ Hierarchical grid functions
     must be at least of size maxUncompactSize(compactedSet, numHexes, res).
 
     Returns 0 on success.
+
+  uncompactWrapper
+      my $aref = $gh3->uncompactWrapper(\@indexes, $resolution);
 
   maxUncompactSize
     Returns the size of the array needed by uncompact.

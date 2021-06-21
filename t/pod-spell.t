@@ -120,3 +120,4 @@ hexRingWrapper
 maxHexRangeSize
 maxHexRingSize
 hexRangeDistancesWrapper
+uncompactWrapper

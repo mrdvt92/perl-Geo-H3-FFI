@@ -1,5 +1,15 @@
 Revision history for Perl extension Geo::H3::FFI.
 
+0.05 2021-06-21
+  - Updated lib/Geo/H3/FFI.pm
+    - Added uncompactWrapper
+    - Fixed uncompact and maxUncompactSize
+    - Updated hexRingWrapper pentagonal distortion returns
+  - Updated Makefile.PL for CPANTS
+  - Updated MANIFEST for CPANTS
+  - Updated t/007_hierarchical_grid_functions.t
+    - Added uncompactWrapper tests
+
 0.04 2021-06-20
   - Updated Makefile.PL to support CPAN testers
 
