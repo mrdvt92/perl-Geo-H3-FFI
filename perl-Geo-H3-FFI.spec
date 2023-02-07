@@ -51,7 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc Changes META.json perl-Geo-H3-FFI.spec README
+%doc Changes META.json
 %{perl_vendorlib}/*
 %{_mandir}/man3/*
 

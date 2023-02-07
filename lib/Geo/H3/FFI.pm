@@ -37,7 +37,7 @@ Geo::H3::FFI - Perl FFI binding to H3 v3.x library functions
 
 Perl FFI binding to H3 v3.x library functions.
 
-Please note that the H3 library has undergone a re-write that is not backwards compatable.  I hope to add support for the H3 v4.x library seemlessly for the Perl Community but for now please use the L<3.7.2|https://github.com/uber/h3/releases/tag/v3.7.2> version of the H3 library with this module.
+Please note that the H3 library has undergone a re-write that is not backwards compatible.  I hope to add support for the H3 v4.x library seamlessly for the Perl Community but for now please use the L<3.7.2|https://github.com/uber/h3/releases/tag/v3.7.2> version of the H3 library with this module.
 
 =head1 CONSTRUCTORS
 
