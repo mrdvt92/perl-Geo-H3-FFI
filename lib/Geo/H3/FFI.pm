@@ -27,7 +27,7 @@ sub _oowrapper {
 
 =head1 NAME
 
-Geo::H3::FFI - Perl FFI binding to H3 library functions
+Geo::H3::FFI - Perl FFI binding to H3 v3.x library functions
 
 =head1 SYNOPSIS
 
@@ -35,7 +35,9 @@ Geo::H3::FFI - Perl FFI binding to H3 library functions
 
 =head1 DESCRIPTION
 
-Perl FFI binding to H3 library functions
+Perl FFI binding to H3 v3.x library functions.
+
+Please note that the H3 library has undergone a re-write that is not backwards compatable.  I hope to add support for the H3 v4.x library seemlessly for the Perl Community but for now please use the L<3.7.2|https://github.com/uber/h3/releases/tag/v3.7.2> version of the H3 library with this module.
 
 =head1 CONSTRUCTORS
 
@@ -1051,7 +1053,6 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 #double pointDistRads(const GeoCoord *a, const GeoCoord *b);
 $ffi->attach(pointDistRads => ['geo_coord_t', 'geo_coord_t'] => 'double' => \&_oowrapper);
 
-
 =head1 SEE ALSO
 
 L<https://h3geo.org/docs/api/indexing>, L<https://h3geo.org/docs/community/bindings>, L<FFI::CheckLib>, L<FFI::Platypus>, L<FFI::C>
@@ -1065,24 +1066,6 @@ Michael R. Davis
 MIT License
 
 Copyright (c) 2020 Michael R. Davis
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 =cut
 
