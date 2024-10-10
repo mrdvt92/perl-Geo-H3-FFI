@@ -8,9 +8,11 @@ Geo::H3::FFI - Perl FFI binding to H3 v3.x library functions
 
 # DESCRIPTION
 
-Perl FFI binding to H3 v3.x library functions.
+This package is a backend FFI binding package for Uber’s H3 Hexagonal Hierarchical Spatial Index version 3.x. The user interface is L<Geo::H3>.
 
-Please note that the H3 library has undergone a re-write that is not backwards compatible.  I hope to add support for the H3 v4.x library seamlessly for the Perl Community but for now please use the [3.7.2](https://github.com/uber/h3/releases/tag/v3.7.2) version of the H3 library with this module.
+This package is compatible with L<3.7.2|https://github.com/uber/h3/releases/tag/v3.7.2> version of the H3 library. The H3 v3.x library has undergone a re-write that is not backwards compatible. Other than naming conventions, there is no significant functional difference between v3.x and v4.x libraries. The main issue with naming was that the term "hex" in v3.x meant both cells with 5 or 6 points. Whereas in v4.x, "hexagon" means 6 points, "pentagon" means 5 points, and "cell" means 5 or 6 points.
+
+In the future, I hope to add support for the H3 v4.x library in a Geo::H3::FFI:V4 package and update the L<Geo::H3> package to seamlessly work with either backend as well as possibly an XS backend.
 
 # CONSTRUCTORS
 
