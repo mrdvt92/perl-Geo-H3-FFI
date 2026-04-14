@@ -450,7 +450,7 @@ sub hexRangeWrapper {
   my $size       = $self->maxHexRangeSize($k);
   my @array      = (-1) x $size;
   my $distortion = $self->hexRange($index, $k, \@array); #0 if no pentagonal distortion is encountered
-  warn("Error: Package: $PACKAGE, Method: hexRangeWrapper, Distrortion: $distortion") if $distortion;
+  warn("Error: Package: $PACKAGE, Method: hexRangeWrapper, Distortion: $distortion") if $distortion;
   return \@array;
 }
 
@@ -494,7 +494,7 @@ sub hexRangeDistancesWrapper {
   my @dist       = (-1) x $size;
   my %hash       = ();
   my $distortion = $self->hexRangeDistances($index, $k, \@array, \@dist);
-  warn("Error: Package: $PACKAGE, Method: hexRangeDistancesWrapper, Distrortion: $distortion") if $distortion;
+  warn("Error: Package: $PACKAGE, Method: hexRangeDistancesWrapper, Distortion: $distortion") if $distortion;
   @hash{@array}  = @dist; #hash slice assignment
   delete $hash{'18446744073709551615'};
   return \%hash;
@@ -537,7 +537,7 @@ sub hexRingWrapper {
   my $size       = $self->maxHexRingSize($k);
   my @array      = (-1) x $size;
   my $distortion = $self->hexRing($index, $k, \@array); #0 if no pentagonal distortion was encountered
-  warn("Error: Package: $PACKAGE, Method: hexRingWrapper, Distrortion: $distortion") if $distortion;
+  warn("Error: Package: $PACKAGE, Method: hexRingWrapper, Distortion: $distortion") if $distortion;
   return [grep {$_ > 0 and $_ < 18446744073709551615} @array];
 }
 
