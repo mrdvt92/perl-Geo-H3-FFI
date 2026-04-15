@@ -7,7 +7,7 @@ use FFI::Platypus qw{};
 use FFI::C qw{};
 
 our $PACKAGE = __PACKAGE__;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 my $lib = FFI::CheckLib::find_lib_or_die(lib => 'h3');
 my $ffi = FFI::Platypus->new(api => 1, lib => $lib);
@@ -404,20 +404,43 @@ Returns a hash reference where the keys are the H3 index and values are the k di
 
   my $href = $gh3->kRingDistancesWrapper($index, $k); #isa HASH
 
+Note: kRingDistancesWrapper is now a wrapper around kRingDistancesWrapperArray for backwards compatibility
+
 =cut
 
 sub kRingDistancesWrapper {
   my $self  = shift;
   my $index = shift;
   my $k     = shift;
-  my $size  = $self->maxKringSize($k);
-  my @array = (-1) x $size;
-  my @dist  = (-1) x $size;
-  my %hash  = ();
+  return {map {@$_} @{$self->kRingDistancesWrapperArray($index, $k)}};
+}
+
+=head2 kRingDistancesWrapperArray
+
+Returns an array reference of array references where the first value is the H3 index and second value is the k distance for the given index and k value.
+
+  my $aref = $gh3->kRingDistancesWrapperArray($index, $k); #isa ARRAY-ARRAY - [[uint64, k-distance], ...]
+
+Note: kRingDistancesWrapperArray maintains order and does not coerce uint64 to a hash key string unlike kRingDistancesWrapper.
+
+=cut
+
+sub kRingDistancesWrapperArray {
+  my $self   = shift;
+  my $index  = shift;
+  my $k      = shift;
+  my $size   = $self->maxKringSize($k);
+  my @array  = (-1) x $size;
+  my @dist   = (-1) x $size;
+  my @output = ();
   $self->kRingDistances($index, $k, \@array, \@dist);
-  @hash{@array} = @dist; #hash slice assignment
-  delete $hash{'18446744073709551615'};
-  return \%hash;
+  foreach my $j (0 .. $#array) {
+    my $uint64 = $array[$j];
+    my $k_dist = $dist[$j];
+    next if $uint64 == 18446744073709551615;
+    push @output, [$uint64, $k_dist];
+  }
+  return \@output;
 }
 
 =head2 hexRange
@@ -489,15 +512,34 @@ sub hexRangeDistancesWrapper {
   my $self       = shift;
   my $index      = shift;
   my $k          = shift;
+  return {map {@$_} @{$self->hexRangeDistancesWrapperArray($index, $k)}};
+}
+
+=head2 hexRangeDistancesWrapperArray
+
+ my $aref = $gh3->hexRangeDistancesWrapperArray($index, $k); #isa ARRAY-ARRAY - [[uint64, k-distance], ...]
+
+Note: hexRangeDistancesWrapperArray maintains order and does not coerce uint64 to a hash key string unlike hexRangeDistancesWrapper.
+
+=cut
+
+sub hexRangeDistancesWrapperArray {
+  my $self       = shift;
+  my $index      = shift;
+  my $k          = shift;
   my $size       = $self->maxHexRangeSize($k);
   my @array      = (-1) x $size;
   my @dist       = (-1) x $size;
-  my %hash       = ();
+  my @output     = ();
   my $distortion = $self->hexRangeDistances($index, $k, \@array, \@dist);
   warn("Error: Package: $PACKAGE, Method: hexRangeDistancesWrapper, Distortion: $distortion") if $distortion;
-  @hash{@array}  = @dist; #hash slice assignment
-  delete $hash{'18446744073709551615'};
-  return \%hash;
+  foreach my $j (0 .. $#array) {
+    my $uint64 = $array[$j];
+    my $k_dist = $dist[$j];
+    next if $uint64 == 18446744073709551615;
+    push @output, [$uint64, $k_dist];
+  }
+  return \@output;
 }
 
 =head2 hexRanges

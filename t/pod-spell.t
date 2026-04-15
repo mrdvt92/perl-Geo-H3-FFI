@@ -123,3 +123,6 @@ hexRangeDistancesWrapper
 uncompactWrapper
 v3
 v4
+hexRangeDistancesWrapperArray
+kRingDistancesWrapperArray
+uint64

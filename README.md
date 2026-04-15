@@ -8,11 +8,9 @@ Geo::H3::FFI - Perl FFI binding to H3 v3.x library functions
 
 # DESCRIPTION
 
-This package is a backend FFI binding package for Uber’s H3 Hexagonal Hierarchical Spatial Index version 3.x. The user interface is [Geo::H3](https://metacpan.org/pod/Geo::H3).
+Perl FFI binding to H3 v3.x library functions.
 
-This package is compatible with [3.7.2](https://github.com/uber/h3/releases/tag/v3.7.2) version of the H3 library. The H3 v3.x library has undergone a re-write that is not backwards compatible. Other than naming conventions, there is no significant functional difference between v3.x and v4.x libraries. The main issue with naming was that the term "hex" in v3.x meant both cells with 5 or 6 points. Whereas in v4.x, "hexagon" means 6 points, "pentagon" means 5 points, and "cell" means 5 or 6 points.
-
-In the future, I hope to add support for the H3 v4.x library in a Geo::H3::FFI:V4 package and update the [Geo::H3](https://metacpan.org/pod/Geo::H3) package to seamlessly work with either backend as well as possibly an XS backend.
+Please note that the H3 library has undergone a re-write that is not backwards compatible.  I hope to add support for the H3 v4.x library seamlessly for the Perl Community but for now please use the [3.7.2](https://github.com/uber/h3/releases/tag/v3.7.2) version of the H3 library with this module.
 
 # CONSTRUCTORS
 
@@ -206,6 +204,16 @@ Returns a hash reference where the keys are the H3 index and values are the k di
 
     my $href = $gh3->kRingDistancesWrapper($index, $k); #isa HASH
 
+Note: kRingDistancesWrapper is now a wrapper around kRingDistancesWrapperArray for backwards compatibility
+
+## kRingDistancesWrapperArray
+
+Returns an array reference of array references where the first value is the H3 index and second value is the k distance for the given index and k value.
+
+    my $aref = $gh3->kRingDistancesWrapperArray($index, $k); #isa ARRAY-ARRAY - [[uint64, k-distance], ...]
+
+Note: kRingDistancesWrapperArray maintains order and does not coerce uint64 to a hash key string unlike kRingDistancesWrapper.
+
 ## hexRange
 
 hexRange produces indexes within k distance of the origin index. Output behavior is undefined when one of the indexes returned by this function is a pentagon or is in the pentagon distortion area.
@@ -241,6 +249,12 @@ Returns 0 if no pentagonal distortion is encountered.
 ## hexRangeDistancesWrapper
 
     my $href = $gh3->hexRangeDistancesWrapper($index, $k); 
+
+## hexRangeDistancesWrapperArray
+
+    my $aref = $gh3->hexRangeDistancesWrapperArray($index, $k); #isa ARRAY-ARRAY - [[uint64, k-distance], ...]
+
+Note: hexRangeDistancesWrapperArray maintains order and does not coerce uint64 to a hash key string unlike hexRangeDistancesWrapper.
 
 ## hexRanges
 
@@ -508,7 +522,7 @@ Gives the "great circle" or "haversine" distance between pairs of GeoCoord point
 
 # SEE ALSO
 
-[https://h3geo.org/docs/api/indexing](https://h3geo.org/docs/api/indexing), [https://h3geo.org/docs/community/bindings](https://h3geo.org/docs/community/bindings), [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus), [FFI::C](https://metacpan.org/pod/FFI::C)
+[https://h3geo.org/docs/api/indexing](https://h3geo.org/docs/api/indexing), [https://h3geo.org/docs/community/bindings](https://h3geo.org/docs/community/bindings), [FFI::CheckLib](https://metacpan.org/pod/FFI%3A%3ACheckLib), [FFI::Platypus](https://metacpan.org/pod/FFI%3A%3APlatypus), [FFI::C](https://metacpan.org/pod/FFI%3A%3AC)
 
 # AUTHOR
 
