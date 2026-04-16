@@ -1,5 +1,8 @@
 Revision history for Perl extension Geo::H3::FFI.
 
+0.08 2026-04-16
+  - Fixed skip count in t/010_grid_traversal_functions.t - Fixes #4
+
 0.07 2026-04-15
   - Updated lib/Geo/H3/FFI.pm
     - Added methods kRingDistancesWrapperArray and hexRangeDistancesWrapperArray to preserve order and to not coerce uint64 to a hash key string

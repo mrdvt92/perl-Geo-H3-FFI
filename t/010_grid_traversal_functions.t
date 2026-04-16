@@ -7,7 +7,7 @@ use FFI::CheckLib qw{find_lib};
 my $lib = find_lib(lib=>'h3');
 
 SKIP: {
-  skip 'libh3 not available', 43 unless $lib;
+  skip 'libh3 not available', 49 unless $lib;
 
   require_ok 'Geo::H3::FFI';
 
